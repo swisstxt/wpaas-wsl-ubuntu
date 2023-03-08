@@ -20,3 +20,6 @@ set -e
 
 # install nodejs, npm, n and upgrade to LTS version
 . ./install_nodejs.sh
+
+# install helm
+. ./install_helm.sh

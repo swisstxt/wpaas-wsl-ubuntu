@@ -1,4 +1,3 @@
-#https://cloud-images.ubuntu.com/wsl/jammy/current/ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz
 curl (("https://cloud-images.ubuntu.com",
 "wsl/jammy/current",
 "ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz") -join "/")  -OutFile rootfs-tar.gz
@@ -25,3 +24,4 @@ Get-ChildItem -Path $key | ForEach-Object {
 wsl -d ubuntu-wpaas -u $user --cd ~ -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.tar.gz -o install.tar.gz
 wsl -d ubuntu-wpaas -u $user --cd ~ -- tar xvzf install.tar.gz
 wsl -d ubuntu-wpaas -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash install.sh
+wsl --shutdown

@@ -32,3 +32,6 @@ set -ex
 
 # install dotnet 6&7
 . ./install_dotnet.sh
+
+# install jdk 11 & 17, set 11 as default
+. ./install_jdk.sh

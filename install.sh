@@ -23,3 +23,6 @@ set -e
 
 # install helm
 . ./install_helm.sh
+
+# install docker (only if not using docker desktop integration)
+. ./install_docker.sh

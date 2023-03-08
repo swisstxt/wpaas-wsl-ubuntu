@@ -29,3 +29,6 @@ set -ex
 
 # install wsl configuration
 . ./install_wslconf.sh
+
+# install dotnet 6&7
+. ./install_dotnet.sh

@@ -13,6 +13,9 @@
 
 Launch the bootstrap.ps1 script `.\bootstrap.ps1` and it will guide you trough the further installation steps
 
+### Notes
+- *this won't affect any existing wsl installations*, it will install a new wsl installation called `ubuntu-wpaas`
+
 ### Or the YOLO way of doing things
 
 if you are too lazy and simply don't care too much, just launch the script directly from github (yes, some people might complain)

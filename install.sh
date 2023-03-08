@@ -26,3 +26,6 @@ set -e
 
 # install docker (only if not using docker desktop integration)
 . ./install_docker.sh
+
+# install wsl configuration
+. ./install_wslconf.sh

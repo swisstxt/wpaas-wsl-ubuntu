@@ -10,7 +10,7 @@ $dist = "ubuntu-wpaas"
 
 $user = Read-Host -Prompt "Enter your linux username"
 
-wsl -d ubuntu-wpaas -- useradd -m -G sudo -s /bin/bash $user
+wsl -d ubuntu-wpaas -- useradd -u 1000 -m -G sudo -s /bin/bash $user
 wsl -d ubuntu-wpaas -- passwd $user
 
 Get-ChildItem -Path $key | ForEach-Object {

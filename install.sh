@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # exit on error
-set -e
+set -ex
 
 # import bash function library
 . ./lib.sh

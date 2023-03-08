@@ -1,7 +1,7 @@
-
+#https://cloud-images.ubuntu.com/wsl/jammy/current/ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz
 curl (("https://cloud-images.ubuntu.com",
-"releases/jammy/release",
-"ubuntu-22.04-server-cloudimg-amd64.tar.gz") -join "/")  -OutFile rootfs-tar.gz
+"wsl/jammy/current",
+"ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz") -join "/")  -OutFile rootfs-tar.gz
 
 wsl --set-default-version 2
 wsl --import --import ubuntu-wpaas (($HOME, "ubuntu-wpaas") -join "\") .\rootfs-tar.gz

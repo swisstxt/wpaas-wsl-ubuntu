@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# exit on error
+set -e
+
 # import bash function library
 . ./lib.sh
 
@@ -11,3 +14,6 @@
 
 # copy profile extension scripts
 . ./install_profile.sh
+
+# install kubectl
+. ./install_kubectl.sh

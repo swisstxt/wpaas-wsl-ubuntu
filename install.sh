@@ -38,3 +38,6 @@ set -ex
 
 # install essentials
 . ./install_essentials.sh
+
+# install github cli
+. ./install_githubcli.sh

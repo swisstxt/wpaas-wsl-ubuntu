@@ -17,3 +17,6 @@ set -e
 
 # install kubectl
 . ./install_kubectl.sh
+
+# install nodejs, npm, n and upgrade to LTS version
+. ./install_nodejs.sh

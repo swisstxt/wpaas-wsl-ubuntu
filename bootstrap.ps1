@@ -22,7 +22,7 @@ Get-ChildItem -Path $key | ForEach-Object {
     }
 }
 
-wsl -d ubuntu-wpaas -u $user -- curl -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.zip -o ~/install.tar.gz
+wsl -d ubuntu-wpaas -u $user -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.zip -o ~/install.tar.gz
 wsl -d ubuntu-wpaas -u $user -- tar xvzf ~/install.tar.gz -C ~
 wsl -d ubuntu-wpaas -u $user --cd ~ -- tar xvzf ~/install.tar.gz
 wsl -d ubuntu-wpaas -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash install.sh

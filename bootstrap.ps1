@@ -34,7 +34,7 @@ try {
     wsl -d ubuntu-wpaas -u $user --cd ~ -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.tar.gz -o install.tar.gz
     wsl -d ubuntu-wpaas -u $user --cd ~ -- tar xvzf install.tar.gz
     wsl -d ubuntu-wpaas -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash install.sh
-    wsl --shutdown
+    wsl --terminate ubuntu-wpaas
 
 } catch {
     Write-Output "$($_.ScriptStackTrace)"

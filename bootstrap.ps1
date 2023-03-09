@@ -10,8 +10,7 @@ try {
 
         Write-Output "Downloading ubuntu cloud image from $url ...please be patient"
 
-        $wc = New-Object net.webclient
-        $wc.Downloadfile($url, $rootfs)
+        Start-BitsTransfer -Source $url -Destination $rootfs
     }
     
     wsl --set-default-version 2

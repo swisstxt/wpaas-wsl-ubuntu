@@ -27,6 +27,8 @@ if [ ! -e "$WSL_DOCKER" ]; then  # only install docker if no docker desktop inte
 
     sudo apt-get update
     sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+    sudo adduser $USER docker
 else
     echo "Docker desktop WSL integration active, not installing docker in wsl"
 fi

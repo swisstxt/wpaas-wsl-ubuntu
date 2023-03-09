@@ -15,6 +15,9 @@ set -ex
 # copy profile extension scripts
 . ./install_profile.sh
 
+# make apt work with bad proxies (aka. zscaler)
+. ./install_badproxy.sh
+
 # install kubectl
 . ./install_kubectl.sh
 

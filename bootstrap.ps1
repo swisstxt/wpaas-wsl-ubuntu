@@ -14,12 +14,12 @@ try {
     }
     
     wsl --set-default-version 2
-    wsl --import --import ubuntu-wpaas (($HOME, $dist) -join "\") .\$rootfs
+    wsl --import --import $dist (($HOME, $dist) -join "\") .\$rootfs
     
     $user = Read-Host -Prompt "Enter your linux username"
     
-    wsl -d ubuntu-wpaas -- useradd -u 1000 -m -G sudo -s /bin/bash $user
-    wsl -d ubuntu-wpaas -- passwd $user
+    wsl -d $dist -- useradd -u 1000 -m -G sudo -s /bin/bash $user
+    wsl -d $dist -- passwd $user
     
     $key = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss"
     
@@ -31,10 +31,10 @@ try {
         }
     }
     
-    wsl -d ubuntu-wpaas -u $user --cd ~ -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.tar.gz -o install.tar.gz
-    wsl -d ubuntu-wpaas -u $user --cd ~ -- tar xvzf install.tar.gz
-    wsl -d ubuntu-wpaas -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash install.sh
-    wsl --terminate ubuntu-wpaas
+    wsl -d $dist -u $user --cd ~ -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.tar.gz -o install.tar.gz
+    wsl -d $dist -u $user --cd ~ -- tar xvzf install.tar.gz
+    wsl -d $dist -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash install.sh
+    wsl --terminate $dist
 
 } catch {
     Write-Output "$($_.ScriptStackTrace)"

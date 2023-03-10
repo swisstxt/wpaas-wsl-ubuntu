@@ -44,3 +44,6 @@ set -ex
 
 # install github cli
 . ./install_githubcli.sh
+
+# install powerline
+. ./install_powerline.sh

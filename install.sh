@@ -47,3 +47,6 @@ set -ex
 
 # install powerline
 . ./install_powerline.sh
+
+# install latest mesa driver stack (vaapi support)
+. ./install_mesa.sh

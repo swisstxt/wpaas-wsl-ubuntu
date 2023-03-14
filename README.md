@@ -1,32 +1,45 @@
-# Ubuntu for WSL on WPAAS clients
+# Ubuntu for Windows Subsystem for Linux (WSL) on Workplace as a Service (WPAAS) Clients
 
-## Usage for vanilla installations:
+This guide outlines the steps to install and use Ubuntu for Windows Subsystem for Linux (WSL) on Workplace as a Service (WPAAS) clients. The instructions are divided into two sections: one for vanilla installations and another for already running Ubuntu installations.
+
+## Usage for Vanilla Installations
 
 ### Preparation
 
-- Enable Windows Subsystem for Linux and Virtual Machine Platform
-- Download and extract this repo to your windows computer and extract it's content somewhere
-- Launch an elevated powershell (*using your adm-account*) -> powershell -> run as administrator -> select your adm- account
-- as this script is not signed in any shape or form, we need to bypass the powershell execution policy using `Set-ExecutionPolicy Unrestricted`
-- once everything is finished you can/should revert it back to `Default`
+To begin, follow these steps:
+
+1. Enable Windows Subsystem for Linux and Virtual Machine Platform.
+2. Download and extract the contents of this repository to your Windows computer.
+3. Launch an elevated PowerShell by running PowerShell as an administrator and selecting your administrative account.
+4. Due to the unsigned nature of the script, the PowerShell execution policy must be bypassed using `Set-ExecutionPolicy Unrestricted`.
+5. Once the script has finished running, it is recommended to restore the PowerShell execution policy to `Default`.
 
 ### Execution
-- Launch an elevated powershell (NOT using your adm-account) -> powershell -> run as administrator -> select your regular user
-Launch the bootstrap.ps1 script `.\bootstrap.ps1` and it will guide you trough the further installation steps
+
+After preparing your system, follow these steps to install Ubuntu:
+
+1. Launch an elevated PowerShell (not using your administrative account) by running PowerShell as an administrator and selecting your regular user.
+2. Run the `bootstrap.ps1` script located in the extracted repository using `.\bootstrap.ps1`.
+3. The script will guide you through the remaining installation process.
 
 ### Notes
-- *this won't affect any existing wsl installations*, it will install a new wsl installation called `ubuntu-wpaas`
 
-### Or the YOLO way of doing things
+- This installation process will not affect any existing WSL installations; instead, it will create a new WSL installation named `ubuntu-wpaas`.
+- After completing the installation process, it is recommended to restore the PowerShell execution policy to `Default`.
 
-if you are too lazy and simply don't care too much, just launch the script directly from github (yes, some people might complain)
+### Alternative, Non-recommended Installation Method
+
+For a quicker installation method, execute the following PowerShell command directly from GitHub. However, this method is not recommended as it offers no security guarantees.
 
 ```
 Set-ExecutionPolicy Unrestricted
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/swisstxt/wpaas-wsl-ubuntu/master/bootstrap.ps1'))
 ```
 
-## Usage for already running Ubuntu installations
 
-- Download contents of this repo into your wsl installation
-- Run `./install.sh`
+## Usage for Already Running Ubuntu Installations
+
+To install Ubuntu for WSL on an already running Ubuntu installation, follow these steps:
+
+1. Download the contents of this repository into your WSL installation.
+2. Run the `install.sh` script located in the extracted repository.

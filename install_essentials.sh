@@ -5,8 +5,8 @@ sudo apt-get install -y git build-essential
 
 git config --global http.proxy http://gateway.zscloud.net:10268
 
-email="$(git config --global user.email)"
-name="$(git config --global user.name)"
+email="$(git config --global user.email || true)"
+name="$(git config --global user.name || true)"
 
 if [ -z $"$email" ]; then
     read -p "please enter your email address used as git author:" email

@@ -50,3 +50,6 @@ set -ex
 
 # install latest mesa driver stack (vaapi support)
 . ./install_mesa.sh
+
+# install nvidia container toolkit
+. ./install_nvidia_container_toolkit.sh

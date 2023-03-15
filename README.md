@@ -2,6 +2,33 @@
 
 This guide outlines the steps to install and use Ubuntu for Windows Subsystem for Linux (WSL) on Workplace as a Service (WPAAS) clients. The instructions are divided into two sections: one for vanilla installations and another for already running Ubuntu installations.
 
+# What's included
+
+## Configuration
+
+- system ca-certificates for zscaler, stxt and srg
+- HTTP_PROXY and HTTPS_PROXY
+- Git proxy settings
+- Npm proxy and certificates
+- Version pinnings for kubectl and helm
+
+# Features
+
+- VA-API Video Hardware decode/encode accelertion via mesa/gallium/d3d12
+- GPU containers (nvidia docker runtime)
+- CUDA support
+
+## Software Packages
+
+- Docker
+- Kubectl (incl alias & completion)
+- Helm
+- Node
+- JDK 11+17 (Temurin)
+- Dotnet SDK 6+7
+- Git & GitHub CLI
+- Powerline
+
 ## Usage for Vanilla Installations
 
 ### Preparation
@@ -36,10 +63,10 @@ Set-ExecutionPolicy Unrestricted
 iex (Invoke-WebRequest -Uri  https://raw.githubusercontent.com/swisstxt/wpaas-wsl-ubuntu/master/bootstrap.ps1).Content
 ```
 
-
 ## Usage for Already Running Ubuntu Installations
 
 To install Ubuntu for WSL on an already running Ubuntu installation, follow these steps:
 
 1. Download the contents of this repository into your WSL installation.
 2. Run the `install.sh` script located in the extracted repository.
+

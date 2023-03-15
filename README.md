@@ -33,7 +33,7 @@ For a quicker installation method, execute the following PowerShell command dire
 
 ```
 Set-ExecutionPolicy Unrestricted
-iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/swisstxt/wpaas-wsl-ubuntu/master/bootstrap.ps1'))
+iex (Invoke-WebRequest -Uri  https://raw.githubusercontent.com/swisstxt/wpaas-wsl-ubuntu/master/bootstrap.ps1).Content
 ```
 
 

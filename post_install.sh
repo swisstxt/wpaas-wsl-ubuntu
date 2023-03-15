@@ -10,3 +10,7 @@ set -ex
 
 # post installation for nvidia container runtime
 . ./post_install_nvidia_container_toolkit.sh
+
+# install rider (needs to be in post as snap service needs to be running)
+. ./post_install_rider.sh
+

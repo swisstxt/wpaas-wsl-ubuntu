@@ -63,6 +63,9 @@ set -ex
 # install wslu for better browser integration
 . ./install_wslu.sh
 
+# install whisper
+. ./install_whisper.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

@@ -28,6 +28,7 @@ This guide outlines the steps to install and use Ubuntu for Windows Subsystem fo
 - Dotnet SDK 6+7
 - Git & GitHub CLI
 - Powerline
+- OpenAI whisper
 
 ## Usage for Vanilla Installations
 

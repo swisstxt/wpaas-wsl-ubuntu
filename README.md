@@ -29,6 +29,8 @@ This guide outlines the steps to install and use Ubuntu for Windows Subsystem fo
 - Git & GitHub CLI
 - Powerline
 - OpenAI whisper
+- Rider
+- IntelliJ
 
 ## Usage for Vanilla Installations
 

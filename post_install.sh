@@ -14,3 +14,6 @@ set -ex
 # install rider (needs to be in post as snap service needs to be running)
 . ./post_install_rider.sh
 
+# install intellij ultimate (needs to be in post as snap service needs to be running)
+. ./post_install_intellij.sh
+

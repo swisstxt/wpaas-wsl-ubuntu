@@ -35,6 +35,7 @@ try {
     wsl -d $dist -u $user --cd ~ -- tar xvzf install.tar.gz
     wsl -d $dist -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash install.sh
     wsl --terminate $dist
+    wsl -d $dist -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash post_install.sh
 
 } catch {
     Write-Output "$($_.ScriptStackTrace)"

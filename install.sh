@@ -59,3 +59,10 @@ set -ex
 
 # install some kubernetes contexts
 . ./install_kubecontexts.sh
+
+
+## post install (only launch if systemd is running)
+
+if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then
+. ./post_install.sh
+fi

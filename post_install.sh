@@ -17,3 +17,6 @@ set -ex
 # install intellij ultimate (needs to be in post as snap service needs to be running)
 . ./post_install_intellij.sh
 
+# yq yaml processor
+. ./post_install_yq.sh
+

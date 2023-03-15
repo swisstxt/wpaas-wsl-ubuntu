@@ -72,6 +72,9 @@ set -ex
 # install mediainfo
 . ./install_mediainfo.sh
 
+# install jq
+. ./install_jq.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

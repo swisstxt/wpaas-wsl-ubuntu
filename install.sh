@@ -75,6 +75,9 @@ set -ex
 # install jq
 . ./install_jq.sh
 
+# install hushlogin (disables daily login banner)
+. ./install_hushlogin.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

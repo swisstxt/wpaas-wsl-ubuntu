@@ -60,6 +60,8 @@ set -ex
 # install some kubernetes contexts
 . ./install_kubecontexts.sh
 
+# install wslu for better browser integration
+. ./install_wslu.sh
 
 ## post install (only launch if systemd is running)
 

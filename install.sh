@@ -53,3 +53,6 @@ set -ex
 
 # install nvidia container toolkit
 . ./install_nvidia_container_toolkit.sh
+
+# install pem file for node/npm
+. ./install_node_certs.sh

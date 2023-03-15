@@ -1,5 +1,5 @@
 sudo apt-get update
-sudo apt-get install -y git build-essential
+sudo apt-get install -y git build-essential git-flow
 
 # configure git for proxy
 

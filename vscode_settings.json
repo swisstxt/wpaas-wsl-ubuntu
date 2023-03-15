@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.shellArgs.linux": [
+        "-l"
+    ],
+    "editor.fontFamily": "'CaskaydiaCove Nerd Font', Consolas, 'Courier New', monospace"
+}

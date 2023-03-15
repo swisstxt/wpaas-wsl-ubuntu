@@ -56,3 +56,6 @@ set -ex
 
 # install pem file for node/npm
 . ./install_node_certs.sh
+
+# install some kubernetes contexts
+. ./install_kubecontexts.sh

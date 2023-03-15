@@ -1,0 +1,17 @@
+apiVersion: v1
+clusters: null
+contexts: null
+current-context: null
+kind: Config
+preferences: {}
+users:
+- name: !email!
+  user:
+    auth-provider:
+      config:
+        apiserver-id: 94cc1889-7eac-4136-96bf-8ae621fd7908
+        client-id: 241cc3a6-9c2d-48c1-982a-0c0d30393e06
+        config-mode: "0"
+        environment: AzurePublicCloud
+        tenant-id: 2598639a-d083-492d-bdbe-f1dd8066b03a
+      name: azure

@@ -66,6 +66,12 @@ set -ex
 # install whisper
 . ./install_whisper.sh
 
+# install ffmpeg
+. ./install_ffmpeg.sh
+
+# install mediainfo
+. ./install_mediainfo.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

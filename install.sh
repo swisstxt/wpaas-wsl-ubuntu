@@ -84,6 +84,9 @@ set -ex
 # install krew for kubectl (plugin manager)
 . ./install_krew.sh
 
+# install kubens and kubectx
+. ./install_kubens_kubectx.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

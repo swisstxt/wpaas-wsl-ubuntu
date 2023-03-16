@@ -81,6 +81,9 @@ set -ex
 # install install a settings.json file for vscode
 . ./install_vscode_settings.sh
 
+# install krew for kubectl (plugin manager)
+. ./install_krew.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

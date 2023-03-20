@@ -87,6 +87,9 @@ set -ex
 # install kubens and kubectx
 . ./install_kubens_kubectx.sh
 
+# install python 3
+. ./install_python3.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

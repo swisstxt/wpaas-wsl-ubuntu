@@ -27,6 +27,9 @@ set -ex
 # install nodejs, npm, n and upgrade to LTS version
 . ./install_nodejs.sh
 
+# install helper scripts
+. ./install_bin.sh
+
 # install helm
 . ./install_helm.sh
 

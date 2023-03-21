@@ -18,6 +18,9 @@ set -ex
 # make apt work with bad proxies (aka. zscaler)
 . ./install_badproxy.sh
 
+# use proxy for apt
+. ./install_apt_zscaler.sh
+
 # install kubectl
 . ./install_kubectl.sh
 

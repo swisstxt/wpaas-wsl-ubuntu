@@ -96,6 +96,9 @@ set -ex
 # install python 3
 . ./install_python3.sh
 
+# install github action runner
+. ./install_gh_act.sh
+
 ## post install (only launch if systemd is running)
 
 if [ "$(ps --no-headers -o comm 1)" = "systemd" ]; then

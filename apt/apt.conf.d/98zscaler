@@ -1,1 +1,1 @@
-Acquire::http::Proxy "http://gateway.zscloud.net:10268";
+Acquire::http::Proxy "http://zrh1-2.sme.zscloud.net:10268";

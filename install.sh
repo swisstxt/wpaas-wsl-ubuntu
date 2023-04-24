@@ -96,6 +96,9 @@ set -ex
 # install python 3
 . ./install_python3.sh
 
+# install and configure vault
+. ./install_vault.sh
+
 # install github action runner
 . ./install_gh_act.sh
 

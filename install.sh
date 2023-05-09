@@ -99,6 +99,9 @@ set -ex
 # install and configure vault
 . ./install_vault.sh
 
+# install telepresence
+. ./install_telepresence.sh
+
 # install github action runner
 . ./install_gh_act.sh
 

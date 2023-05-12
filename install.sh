@@ -102,6 +102,9 @@ set -ex
 # install telepresence
 . ./install_telepresence.sh
 
+# install rustup/cargo
+. ./install_rust.sh
+
 # install github action runner
 . ./install_gh_act.sh
 

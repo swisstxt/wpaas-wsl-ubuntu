@@ -4,7 +4,7 @@ $rootfs = "$dist-rootfs.tar.gz"
 try {
     if (-not(Test-Path $rootfs)) {
         
-        $url = (("https://mirror.scaleuptech.com/ubuntu-cloud-images",
+        $url = (("https://cloud-images.ubuntu.com/",
         "wsl/jammy/current",
         "ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz") -join "/")
 

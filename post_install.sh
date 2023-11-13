@@ -20,3 +20,5 @@ set -ex
 # yq yaml processor
 . ./post_install_yq.sh
 
+# binfmt config
+. ./post_install_binfmt.sh

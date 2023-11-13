@@ -17,3 +17,9 @@ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https:/
 
 sudo apt-get update
 sudo apt-get install -y kubectl
+
+
+curl -LO https://github.com/Azure/kubelogin/releases/latest/download/kubelogin-linux-amd64.zip
+unzip kubelogin-linux-amd64.zip
+sudo mv bin/linux_amd64/kubelogin /usr/local/bin/
+rm kubelogin-linux-amd64.zip

@@ -15,3 +15,20 @@ users:
         environment: AzurePublicCloud
         tenant-id: 2598639a-d083-492d-bdbe-f1dd8066b03a
       name: azure
+- name: !email!-kubelogin
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      args:
+      - get-token
+      - --login
+      - devicecode
+      - --server-id
+      - 94cc1889-7eac-4136-96bf-8ae621fd7908
+      - --client-id
+      - 241cc3a6-9c2d-48c1-982a-0c0d30393e06
+      - --tenant-id
+      - 2598639a-d083-492d-bdbe-f1dd8066b03a
+      - --environment
+      - AzurePublicCloud
+      command: kubelogin

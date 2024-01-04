@@ -23,3 +23,4 @@ curl -LO https://github.com/Azure/kubelogin/releases/latest/download/kubelogin-l
 unzip kubelogin-linux-amd64.zip
 sudo mv bin/linux_amd64/kubelogin /usr/local/bin/
 rm kubelogin-linux-amd64.zip
+rm -r bin/linux_amd64

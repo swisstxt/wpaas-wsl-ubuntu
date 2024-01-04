@@ -14,7 +14,7 @@ try {
     }
     
     wsl --set-default-version 2
-    wsl --import --import $dist (($HOME, $dist) -join "\") .\$rootfs
+    wsl --import $dist (($HOME, $dist) -join "\") .\$rootfs
     
     $user = Read-Host -Prompt "Enter your linux username"
     

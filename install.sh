@@ -7,7 +7,7 @@ set -ex
 . ./lib.sh
 
 # load http proxy env vars
-. profile.d/http_proxy_env.sh
+# . profile.d/http_proxy_env.sh
 
 # install zscaler and srg root certs
 . ./install_certificates.sh
@@ -16,7 +16,7 @@ set -ex
 . ./install_profile.sh
 
 # make apt work with bad proxies (aka. zscaler)
-. ./install_badproxy.sh
+# . ./install_badproxy.sh
 
 # use proxy for apt
 . ./install_apt_zscaler.sh

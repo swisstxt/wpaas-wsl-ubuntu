@@ -1,12 +1,12 @@
-$dist = "ubuntu-wpaas"
+$dist = "ubuntu-wpaas-noble"
 $rootfs = "$dist-rootfs.tar.gz"
 
 try {
     if (-not(Test-Path $rootfs)) {
         
         $url = (("https://cloud-images.ubuntu.com/",
-        "wsl/jammy/current",
-        "ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz") -join "/")
+        "wsl/noble/current",
+        "ubuntu-noble-wsl-amd64-wsl.rootfs.tar.gz") -join "/")
 
         Write-Output "Downloading ubuntu cloud image from $url ...please be patient"
 
@@ -32,10 +32,11 @@ try {
     }
     
     wsl -d $dist -u $user --cd ~ -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.tar.gz -o install.tar.gz
-    wsl -d $dist -u $user --cd ~ -- tar xvzf install.tar.gz
-    wsl -d $dist -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash install.sh
+    wsl -d $dist -u $user --cd ~ -- mkdir ~/installer
+    wsl -d $dist -u $user --cd ~ -- tar xvzf install.tar.gz -C installer  --strip-components=1
+    wsl -d $dist -u $user --cd ~/installer -- bash install.sh
     wsl --terminate $dist
-    wsl -d $dist -u $user --cd ~/wpaas-wsl-ubuntu-master -- bash post_install.sh
+    wsl -d $dist -u $user --cd ~/installer -- bash post_install.sh
 
 } catch {
     Write-Output "$($_.ScriptStackTrace)"

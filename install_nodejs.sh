@@ -6,5 +6,5 @@ sudo n 16
 
 # configure npm proxy
 
-npm config set proxy "http://zrh1-2.sme.zscloud.net:10268"
-npm config set strict-ssl false # this is REAL BIG BS
+# npm config set proxy "http://zrh1-2.sme.zscloud.net:10268"
+# npm config set strict-ssl false # this is REAL BIG BS

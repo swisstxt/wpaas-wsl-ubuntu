@@ -1,12 +1,12 @@
-$dist = "ubuntu-wpaas"
+$dist = "ubuntu-wpaas-noble"
 $rootfs = "$dist-rootfs.tar.gz"
 
 try {
     if (-not(Test-Path $rootfs)) {
         
         $url = (("https://cloud-images.ubuntu.com/",
-        "wsl/jammy/current",
-        "ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz") -join "/")
+        "wsl/noble/current",
+        "ubuntu-noble-wsl-amd64-wsl.rootfs.tar.gz") -join "/")
 
         Write-Output "Downloading ubuntu cloud image from $url ...please be patient"
 

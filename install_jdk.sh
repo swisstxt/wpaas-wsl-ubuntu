@@ -7,5 +7,5 @@ echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.n
 sudo apt-get update
 sudo apt-get install -y temurin-17-jdk temurin-11-jdk
 
-default=$(update-alternatives --list java | grep temurin-11)
+default=$(update-alternatives --list java | grep temurin-17)
 sudo update-alternatives --set java $default

@@ -8,7 +8,7 @@ if [ ! -e "$WSL_DOCKER" ]; then  # only install docker if no docker desktop inte
 
     # sudo cp systemd/http-proxy.conf /etc/systemd/system/docker.service.d
 
-    sudo apt-get -y remove docker docker-engine docker.io containerd runc
+    sudo apt-get -y remove docker  docker.io containerd runc
     sudo apt-get update
     sudo apt-get -y install \
         ca-certificates \

@@ -31,7 +31,7 @@ try {
         }
     }
     
-    wsl -d $dist -u $user --cd ~ -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/feature/ubuntu-24.04.tar.gz -o install.tar.gz
+    wsl -d $dist -u $user --cd ~ -- curl --insecure -L https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.tar.gz -o install.tar.gz
     wsl -d $dist -u $user --cd ~ -- mkdir ~/installer
     wsl -d $dist -u $user --cd ~ -- tar xvzf install.tar.gz -C installer  --strip-components=1
     wsl -d $dist -u $user --cd ~/installer -- bash install.sh

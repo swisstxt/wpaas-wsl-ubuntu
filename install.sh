@@ -70,7 +70,7 @@ set -ex
 . ./install_wslu.sh
 
 # install whisper
-. ./install_whisper.sh
+#. ./install_whisper.sh
 
 # install ffmpeg
 . ./install_ffmpeg.sh

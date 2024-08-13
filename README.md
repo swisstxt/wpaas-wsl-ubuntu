@@ -54,15 +54,24 @@ After preparing your system, follow these steps to install Ubuntu:
 
 ### Notes
 
-- This installation process will not affect any existing WSL installations; instead, it will create a new WSL installation named `ubuntu-wpaas`.
+- This installation process will not affect any existing WSL installations; instead, it will create a new WSL installation named `ubuntu-wpaas-noble`.
 - After completing the installation process, it is recommended to restore the PowerShell execution policy to `Default`.
 
-### Alternative, Non-recommended Installation Method
+### Alternative, (Non-)recommended Installation Method
 
 For a quicker installation method, execute the following PowerShell command directly from GitHub. However, this method is not recommended as it offers no security guarantees.
 
+In a administrator (adm-*) power shell run the following command
+
 ```
 Set-ExecutionPolicy Unrestricted
+```
+
+and then in a regular power shell run
+
+```
+wsl --update
+wsl --set-default-version 2
 iex (Invoke-WebRequest -Uri  https://raw.githubusercontent.com/swisstxt/wpaas-wsl-ubuntu/master/bootstrap.ps1).Content
 ```
 

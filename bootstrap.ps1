@@ -4,9 +4,9 @@ $rootfs = "$dist-rootfs.tar.gz"
 try {
     if (-not(Test-Path $rootfs)) {
         
-        $url = (("https://cloud-images.ubuntu.com/",
+        $url = (("https://cloud-images.ubuntu.com",
         "wsl/noble/current",
-        "ubuntu-noble-wsl-amd64-wsl.rootfs.tar.gz") -join "/")
+        "ubuntu-noble-wsl-amd64-ubuntu24.04lts.rootfs.tar.gz") -join "/")
 
         Write-Output "Downloading ubuntu cloud image from $url ...please be patient"
 

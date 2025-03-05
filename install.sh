@@ -45,6 +45,9 @@ set -ex
 # install jdk 11 & 17, set 11 as default
 . ./install_jdk.sh
 
+# install SRG/ZScaler CA certs to java keystore
+. ./install_java_certs.sh
+
 # install essentials
 . ./install_essentials.sh
 

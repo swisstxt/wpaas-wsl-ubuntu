@@ -3,6 +3,9 @@
 # exit on error
 set -ex
 
+# import global variables
+. ./vars.sh
+
 # import bash function library
 . ./lib.sh
 

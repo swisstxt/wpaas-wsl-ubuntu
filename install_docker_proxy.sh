@@ -1,0 +1,2 @@
+mkdir -p ~/.docker
+cat ~/.docker/config.json || echo "{}" | jq --arg proxy "$HTTP_PROXY" --arg noproxy "$NO_PROXY" '. * {"proxies": { "default": {  "httpProxy": $proxy, "httpsProxy": $proxy, "noProxy": $noproxy, "ftpProxy": null }}}'

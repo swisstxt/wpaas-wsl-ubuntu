@@ -6,5 +6,5 @@ sudo n 16
 
 # configure npm proxy
 
-npm config set proxy "http://gateway.zscloud.net:10268"
+npm config set proxy "$HTTP_PROXY"
 npm config set strict-ssl false # this is REAL BIG BS

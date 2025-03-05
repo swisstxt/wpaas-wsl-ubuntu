@@ -3,7 +3,7 @@ sudo apt-get install -y git build-essential git-flow
 
 # configure git for proxy
 
-git config --global http.proxy http://gateway.zscloud.net:10268
+git config --global http.proxy "$HTTP_PROXY"
 
 email="$(git config --global user.email || true)"
 name="$(git config --global user.name || true)"

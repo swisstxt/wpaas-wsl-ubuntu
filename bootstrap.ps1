@@ -1,5 +1,9 @@
 $dist = "ubuntu-wpaas-noble"
 $rootfs = "$dist-rootfs.tar.gz"
+$rootfsVpnKit = "wsl-vpnkit.tar.gz"
+$distVpnKit = "wsl-vpnkit"
+
+
 
 try {
     if (-not(Test-Path $rootfs)) {
@@ -12,8 +16,16 @@ try {
 
         Start-BitsTransfer -Source $url -Destination $rootfs
     }
+
+    if (-not(Test-Path $rootfsVpnKit)) {
+        
+        $url = "https://github.com/sakai135/wsl-vpnkit/releases/download/v0.4.1/wsl-vpnkit.tar.gz"
+
+        Start-BitsTransfer -Source $url -Destination $rootfsVpnKit
+    }
     
     wsl --set-default-version 2
+    wsl --import $distVpnKit (($HOME, $distVpnKit) -join "\") .\$rootfsVpnKit
     wsl --import $dist (($HOME, $dist) -join "\") .\$rootfs
     
     $user = Read-Host -Prompt "Enter your linux username"

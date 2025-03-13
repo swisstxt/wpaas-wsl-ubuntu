@@ -28,7 +28,7 @@ try {
     
     $user = Read-Host -Prompt "Enter your linux username"
     
-    wsl -d $dist -- useradd -u 1000 -m -G sudo -s /bin/bash $user
+    wsl -d $dist -- useradd -u 1001 -m -G sudo -s /bin/bash $user
     wsl -d $dist -- passwd $user
     
     $key = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss"
@@ -36,7 +36,7 @@ try {
     Get-ChildItem -Path $key | ForEach-Object {
         $distributionName = (Get-ItemProperty -Path $_.PsPath).DistributionName
         if ($distributionName -eq $dist) {
-            Set-ItemProperty -Path $_.PsPath -Name DefaultUid -Value 1000 -Type DWORD
+            Set-ItemProperty -Path $_.PsPath -Name DefaultUid -Value 1001 -Type DWORD
             Write-Output "DefaultUid value set to 1000 for $($_.Name)"
         }
     }

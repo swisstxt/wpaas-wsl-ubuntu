@@ -9,6 +9,9 @@ set -ex
 # import bash function library
 . ./lib.sh
 
+# install config files in home directory
+. ./install_home.sh
+
 # load http proxy env vars
 # . profile.d/http_proxy_env.sh
 

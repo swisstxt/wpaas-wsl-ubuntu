@@ -26,5 +26,5 @@ set -ex
 # binfmt config
 . ./post_install_binfmt.sh
 
-# vpnkit
-. ./post_install_vpnkit.sh
+# # vpnkit
+# . ./post_install_vpnkit.sh

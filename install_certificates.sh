@@ -18,7 +18,7 @@ fi
 CA_CERTIFICATES_SOURCE_DIR=certificates
 CA_CERTIFICATES_TARGET_DIR=/usr/local/share/ca-certificates
 
-for cert in $(ls $CA_CERTIFICATES_SOURCE_DIR/*.crt); do
+for cert in $(ls $CA_CERTIFICATES_SOURCE_DIR/*.crt  $CA_CERTIFICATES_SOURCE_DIR/*.pem); do
     target="$CA_CERTIFICATES_TARGET_DIR/$(basename $cert)"
     if does_not_exists_or_is_different $target $cert; then
         echo "$cert does not appear to be installed"

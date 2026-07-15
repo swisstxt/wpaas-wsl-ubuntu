@@ -25,7 +25,7 @@ This guide outlines the steps to install and use Ubuntu for Windows Subsystem fo
 - Helm
 - Node
 - JDK 11+17 (Temurin)
-- Dotnet SDK 6+7
+- Dotnet SDK 6+7+8+10
 - Git & GitHub CLI
 - Powerline
 - OpenAI whisper

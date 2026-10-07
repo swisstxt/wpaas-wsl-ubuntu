@@ -52,7 +52,7 @@ discover_steps() {
   local f
   for f in "$STEPS_DIR"/[0-9]*-*.sh; do
     [ -e "$f" ] && echo "$f"
-  done | sort
+  done | sort -V
 }
 
 systemd_running() {
@@ -89,7 +89,7 @@ run_step() {
   echo "==> $id  (log: $log)"
   # Explicit stdin: the terminal when we have one, else nothing (never a pipe we own).
   local in=/dev/null
-  if [ -t 0 ]; then in=/dev/tty; fi
+  if [ -t 0 ] && { : </dev/tty; } 2>/dev/null; then in=/dev/tty; fi
   (cd "$REPO_ROOT" && bash -e -u -o pipefail "$file") <"$in" 2>&1 | tee "$log"
   rc=${PIPESTATUS[0]}
   if [ "$rc" -eq 0 ]; then

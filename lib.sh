@@ -1,3 +1,4 @@
+#!/bin/bash
 does_not_exists_or_is_different() {
   if [ ! -e "$1" ]; then   # Check if first file does not exist
     return 0   # Return true
@@ -13,4 +14,19 @@ package_installed() {
   else
     return 1   # Return false if package is not installed
   fi
+}
+
+# retry <n> <cmd...>: run cmd up to n times with a growing pause between tries.
+retry() {
+  local n=$1 i=1
+  shift
+  until "$@"; do
+    if [ "$i" -ge "$n" ]; then
+      echo "retry: giving up after $n attempts: $*" >&2
+      return 1
+    fi
+    echo "retry: attempt $i/$n failed, retrying: $*" >&2
+    sleep $((i * 2))
+    i=$((i + 1))
+  done
 }

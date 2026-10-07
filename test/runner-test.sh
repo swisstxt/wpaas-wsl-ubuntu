@@ -118,5 +118,29 @@ out=$(env -u WPAAS_GIT_NAME bash "$REPO_ROOT/install.sh" --non-interactive 2>&1)
 assert_eq    "exit 2 on missing answer" "$rc" 2
 assert_match "names the missing answer" "$out" "missing answer git_name \(set WPAAS_GIT_NAME\)"
 
+echo "--- run 9: steps do not consume the step list from stdin"
+export STEPS_DIR="$TMP/steps9"
+mkdir -p "$STEPS_DIR"
+cat > "$STEPS_DIR/10-reader.sh" <<'S'
+#!/bin/bash
+# step: reader
+read -r line || true
+echo "read got: '${line:-}'"
+S
+cat > "$STEPS_DIR/20-after.sh" <<'S'
+#!/bin/bash
+# step: after
+echo "after ran"
+S
+out=$(run --non-interactive </dev/null); rc=$?
+assert_eq      "exit 0" "$rc" 0
+assert_match   "later step still ran" "$out" "^ +after +OK"
+assert_nomatch "reader did not get a step filename" "$(grep 'read got' <<<"$out")" "\.sh"
+
+echo "--- run 10: --only without argument"
+out=$(run --only); rc=$?
+assert_eq    "exit 2 on missing option argument" "$rc" 2
+assert_match "clear message" "$out" "option --only needs an argument"
+
 echo
 if [ "$fails" -eq 0 ]; then echo "ALL OK"; else echo "$fails FAILED"; exit 1; fi

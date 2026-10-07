@@ -87,7 +87,10 @@ run_step() {
 
   echo
   echo "==> $id  (log: $log)"
-  (cd "$REPO_ROOT" && bash -e -u -o pipefail "$file") 2>&1 | tee "$log"
+  # Explicit stdin: the terminal when we have one, else nothing (never a pipe we own).
+  local in=/dev/null
+  if [ -t 0 ]; then in=/dev/tty; fi
+  (cd "$REPO_ROOT" && bash -e -u -o pipefail "$file") <"$in" 2>&1 | tee "$log"
   rc=${PIPESTATUS[0]}
   if [ "$rc" -eq 0 ]; then
     date -u +%FT%TZ > "$STATE_DIR/$id.done"
@@ -103,10 +106,11 @@ run_step() {
 }
 
 runner_run_all() {
-  local f
-  while read -r f; do
+  local f steps
+  mapfile -t steps < <(discover_steps)
+  for f in "${steps[@]}"; do
     run_step "$f" || break
-  done < <(discover_steps)
+  done
 }
 
 # runner_summary: prints the table, returns 1 if any step FAILED.
@@ -171,9 +175,13 @@ answers_collect() {
       echo "missing answer $k (set $env)" >&2
       return 1
     fi
-    read -r -p "${ANSWER_PROMPTS[$k]}: " v
     case $k in
-      install_*) case $v in [Yy]*) v=y ;; *) v=n ;; esac ;;
+      install_*)
+        read -r -p "${ANSWER_PROMPTS[$k]}: " v
+        case $v in [Yy]*) v=y ;; *) v=n ;; esac ;;
+      *)
+        v=""
+        while [ -z "$v" ]; do read -r -p "${ANSWER_PROMPTS[$k]}: " v || return 1; done ;;
     esac
     ANSWERS[$k]=$v
   done

@@ -72,10 +72,12 @@ function Install-NerdFont {
         Expand-Archive -Path $zip -DestinationPath $dir
         $fontDir = Join-Path $env:LOCALAPPDATA "Microsoft\Windows\Fonts"
         New-Item -ItemType Directory -Force -Path $fontDir | Out-Null
-        Add-Type -Namespace Win32 -Name Font -MemberDefinition @'
+        if (-not ('Win32.Font' -as [type])) {
+            Add-Type -Namespace Win32 -Name Font -MemberDefinition @'
 [DllImport("gdi32.dll", CharSet = CharSet.Unicode)] public static extern int AddFontResource(string lpFileName);
 [DllImport("user32.dll")] public static extern int SendNotifyMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 '@
+        }
         foreach ($f in Get-ChildItem $dir -Filter "CaskaydiaCoveNerdFontMono-*.ttf") {
             $dest = Join-Path $fontDir $f.Name
             # Skip the copy when the file is already there (it may be in use); still register it so a half-registered install heals.
@@ -128,15 +130,18 @@ function Set-TerminalProfileFont {
 function Invoke-Installer([string]$DistName, [string]$User) {
     & $wsl -d $DistName -u $User --cd "~" -- bash -c "curl --insecure -fsSL '$repoTarball' -o install.tar.gz && rm -rf installer && mkdir installer && tar xzf install.tar.gz -C installer --strip-components=1"
     if ($LASTEXITCODE -ne 0) { throw "Downloading the installer into $DistName failed ($LASTEXITCODE)" }
-    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh
+    # Native output goes to the host so the function's only pipeline output is the boolean result.
+    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh | Out-Host
     $first = $LASTEXITCODE
-    Write-Output "Restarting $DistName so systemd and wsl.conf take effect"
-    & $wsl --terminate $DistName
-    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh
+    Write-Host "Restarting $DistName so systemd and wsl.conf take effect"
+    & $wsl --terminate $DistName | Out-Host
+    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh | Out-Host
     $second = $LASTEXITCODE
     if ($first -ne 0 -or $second -ne 0) {
-        Write-Warning "Some installer steps failed. Logs: \\wsl.localhost\$DistName\home\$User\.wpaas-installer\logs. Rerun with: wsl -d $DistName -u $User --cd ~/installer -- bash install.sh"
+        Write-Warning "Installer passes exited with $first and $second. Logs: \\wsl.localhost\$DistName\home\$User\.wpaas-installer\logs. Rerun with: wsl -d $DistName -u $User --cd ~/installer -- bash install.sh"
+        return $false
     }
+    return $true
 }
 
 if ($LoadOnly) { return }
@@ -162,11 +167,18 @@ try {
     Install-NerdFont
     Set-TerminalProfileFont -DistName $dist -Face $fontFace -SettingsPath $TerminalSettingsPath
     if (-not $SkipInstall) {
-        Invoke-Installer -DistName $dist -User $user
-        Write-Output "Done. Open '$dist' from Windows Terminal."
+        $installerOk = [bool](Invoke-Installer -DistName $dist -User $user)
     }
 } catch {
     Write-Output $_.ScriptStackTrace
     Write-Output "failed to set up WSL: $($_.Exception.Message)"
     exit 1
+}
+if (-not $SkipInstall) {
+    if ($installerOk) {
+        Write-Output "Done. Open '$dist' from Windows Terminal."
+    } else {
+        Write-Output "Finished with installer failures. See the warning above."
+        exit 1
+    }
 }

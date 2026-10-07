@@ -1,3 +1,0 @@
-Package: kubectl
-Pin: version 1.24.*
-Pin-Priority: 1000

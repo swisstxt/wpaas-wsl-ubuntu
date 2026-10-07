@@ -1,84 +1,77 @@
-# Ubuntu for Windows Subsystem for Linux (WSL) on Workplace as a Service (WPAAS) Clients
+# Ubuntu for WSL on WPAAS clients
 
-This guide outlines the steps to install and use Ubuntu for Windows Subsystem for Linux (WSL) on Workplace as a Service (WPAAS) clients. The instructions are divided into two sections: one for vanilla installations and another for already running Ubuntu installations.
+Installs an Ubuntu 26.04 LTS (resolute) WSL distribution named `ubuntu-wpaas-resolute`
+with the SwissTXT developer toolchain. Existing WSL distributions are never touched.
 
-# What's included
+## What you get
 
-## Configuration
+- Corporate CA certificates for the system store, Java keystores, Node (`NODE_EXTRA_CA_CERTS`) and Python requests.
+  No proxy settings: the Zscaler client connector handles the proxy transparently.
+- Docker CE (skipped when Docker Desktop WSL integration is detected), NVIDIA container toolkit
+- kubectl 1.34 (pinned) with kubelogin, krew, kubectx/kubens, optional SwissTXT kube contexts
+- Helm 4
+- Temurin JDK 11, 17, 21, 25 (25 is the default)
+- .NET SDK (newest available, currently 10.0)
+- Node.js (current LTS via `n`)
+- Rust (rustup), Python 3, git + git-flow, GitHub CLI with `gh act`, jq, yq, ffmpeg, mediainfo
+- HashiCorp Vault CLI, Telepresence
+- Claude Code CLI and OpenAI Codex CLI
+- Powerline prompt with the CaskaydiaCove Nerd Font configured in Windows Terminal
+- VA-API video acceleration (d3d12), `wslview` to open URLs in the Windows browser
+- Optional: Rider and IntelliJ IDEA Ultimate (snap)
 
-- system ca-certificates for zscaler, stxt and srg
-- HTTP_PROXY and HTTPS_PROXY
-- Git proxy settings
-- Npm proxy and certificates
-- Version pinnings for kubectl and helm
+## Prerequisites
 
-# Features
+- Windows 11 with WSL 2.4.4 or newer (`wsl --version`; run `wsl --update` if older)
+- Windows Terminal
+- A regular (non admin) user session; no elevation needed
 
-- VA-API Video Hardware decode/encode accelertion via mesa/gallium/d3d12
-- GPU containers (nvidia docker runtime)
-- CUDA support
+## Fresh installation
 
-## Software Packages
+1. Download or clone this repository on Windows.
+2. Open PowerShell as your regular user and allow the script once:
+   `Set-ExecutionPolicy -Scope Process Bypass`
+3. Run `.\bootstrap.ps1`.
+4. When the new distribution starts for the first time, create your Linux user when asked, then type `exit`.
+5. Answer the installer's questions (git identity, kube contexts, JetBrains IDEs). They are asked once and remembered.
+6. Wait for the summary. The script runs the installer a second time after a restart of the
+   distribution to finish steps that need systemd.
 
-- Docker
-- Kubectl (incl alias & completion)
-- Helm
-- Node
-- JDK 11+17 (Temurin)
-- Dotnet SDK 6+7+8+10
-- Git & GitHub CLI
-- Powerline
-- OpenAI whisper
-- Rider
-- IntelliJ
+`bootstrap.ps1 -Name ubuntu-wpaas-test` installs under another name for testing.
 
-## Usage for Vanilla Installations
+## Reruns, failures and flags
 
-### Preparation
-
-To begin, follow these steps:
-
-1. Enable Windows Subsystem for Linux and Virtual Machine Platform.
-2. Download and extract the contents of this repository to your Windows computer.
-3. Launch an elevated PowerShell by running PowerShell as an administrator and selecting your administrative account.
-4. Due to the unsigned nature of the script, the PowerShell execution policy must be bypassed using `Set-ExecutionPolicy Unrestricted`.
-5. Once the script has finished running, it is recommended to restore the PowerShell execution policy to `Default`.
-
-### Execution
-
-After preparing your system, follow these steps to install Ubuntu:
-
-1. Launch an elevated PowerShell (not using your administrative account) by running PowerShell as an administrator and selecting your regular user.
-2. Run the `bootstrap.ps1` script located in the extracted repository using `.\bootstrap.ps1`.
-3. The script will guide you through the remaining installation process.
-
-### Notes
-
-- This installation process will not affect any existing WSL installations; instead, it will create a new WSL installation named `ubuntu-wpaas-noble`.
-- After completing the installation process, it is recommended to restore the PowerShell execution policy to `Default`.
-
-### Alternative, (Non-)recommended Installation Method
-
-For a quicker installation method, execute the following PowerShell command directly from GitHub. However, this method is not recommended as it offers no security guarantees.
-
-In a administrator (adm-*) power shell run the following command
+Inside the distribution the installer lives in `~/installer`. Every step runs in isolation,
+logs to `~/.wpaas-installer/logs/<step>.log` and is marked done in `~/.wpaas-installer/state/`.
+A rerun skips done steps and never asks the saved questions again.
 
 ```
-Set-ExecutionPolicy Unrestricted
+cd ~/installer
+./install.sh                    # rerun, only not-yet-done steps execute
+./install.sh --list             # show steps
+./install.sh --only helm --force   # rerun one step
+./install.sh --skip jetbrains   # skip a step this run
+./install.sh --reset            # forget state, logs and answers
 ```
 
-and then in a regular power shell run
+Answers can be pre-seeded for unattended runs: `WPAAS_GIT_NAME`, `WPAAS_GIT_EMAIL`,
+`WPAAS_INSTALL_KUBECONTEXTS` (y/n), `WPAAS_AZURE_EMAIL`, `WPAAS_INSTALL_JETBRAINS` (y/n),
+together with `--non-interactive`.
+
+Steps `certificates` and `apt-base` are required: if one fails the run stops. Any other
+failure is reported in the summary and the run continues.
+
+## Updating an existing resolute installation
 
 ```
-wsl --update
-wsl --set-default-version 2
-iex (Invoke-WebRequest -Uri  https://raw.githubusercontent.com/swisstxt/wpaas-wsl-ubuntu/master/bootstrap.ps1).Content
+cd ~/installer && git pull && ./install.sh --force
 ```
 
-## Usage for Already Running Ubuntu Installations
+## Development
 
-To install Ubuntu for WSL on an already running Ubuntu installation, follow these steps:
-
-1. Download the contents of this repository into your WSL installation.
-2. Run the `install.sh` script located in the extracted repository.
-
+- `test/lint.sh` runs shellcheck over all shell files.
+- `test/runner-test.sh` checks the step runner against dummy steps.
+- `test/docker-smoke.sh [install.sh args]` runs the installer inside `ubuntu:26.04`
+  against the real repositories (systemd steps report DEFERRED there).
+- Version knobs live in `vars.sh`. Steps live in `steps/NN-<name>.sh`; the header comments
+  `# required: 1`, `# needs_systemd: 1` and `# needs_answers: ...` are read by the runner.

@@ -10,6 +10,10 @@ mkdir -p ~/.kube
 chmod 700 ~/.kube
 for config in kube/*; do
   target="$HOME/.kube/$(basename "$config")"
+  if [ -e "$target" ]; then
+    echo "$target exists, leaving it untouched"
+    continue
+  fi
   sed "s/!email!/${WPAAS_AZURE_EMAIL}/g" "$config" > "$target"
   chmod 600 "$target"
   echo "installed $target"

@@ -151,5 +151,10 @@ done
 out=$(STEPS_DIR="$ORDER_DIR" WPAAS_DIR="$TMP/order-wpaas" run --non-interactive </dev/null)
 assert_eq "steps run in numeric order" "$(grep -o '==> [a-z]*' <<<"$out" | tr '\n' ' ')" "==> first ==> second ==> third "
 
+echo "--- run 12: --only with unknown step"
+out=$(run --only nope 2>&1); rc=$?
+assert_eq    "exit 2 on unknown step" "$rc" 2
+assert_match "unknown step message" "$out" "unknown step: nope \\(see --list\\)"
+
 echo
 if [ "$fails" -eq 0 ]; then echo "ALL OK"; else echo "$fails FAILED"; exit 1; fi

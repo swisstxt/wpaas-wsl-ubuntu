@@ -6,4 +6,5 @@ retry 3 curl -fsSL https://app.getambassador.io/download/tel2/linux/amd64/latest
 sudo install -m 0755 "$tmp" /usr/local/bin/telepresence
 rm -f "$tmp"
 # The daemon is not running at install time; only the client version is checked.
-/usr/local/bin/telepresence version 2>&1 | grep -E '^Client' || { echo "telepresence client did not report a version" >&2; exit 1; }
+out=$(/usr/local/bin/telepresence version 2>&1 || true)
+grep -E '^Client' <<<"$out" || { echo "telepresence client did not report a version:" >&2; echo "$out" >&2; exit 1; }

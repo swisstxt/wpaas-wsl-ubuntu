@@ -22,7 +22,7 @@ Assert "backup written" ((Get-ChildItem $tmp -Filter "settings.json.bak-*").Coun
 @'
 { "profiles": { "list": [ { "name": "other", "guid": "{2}" } ] } }
 '@ | Set-Content $settings
-Set-TerminalProfileFont -DistName "ubuntu-wpaas-resolute" -Face "CaskaydiaCove Nerd Font Mono" -SettingsPath $settings
+Set-TerminalProfileFont -DistName "ubuntu-wpaas-resolute" -Face "CaskaydiaCove Nerd Font Mono" -SettingsPath $settings -FragmentsPath (Join-Path $tmp "none")
 $j = Get-Content $settings -Raw | ConvertFrom-Json
 $p = $j.profiles.list | Where-Object name -eq "ubuntu-wpaas-resolute"
 Assert "profile appended" ($null -ne $p)
@@ -38,6 +38,21 @@ Set-TerminalProfileFont -DistName "ubuntu-wpaas-resolute" -Face "CaskaydiaCove N
 $j = Get-Content $settings -Raw | ConvertFrom-Json
 Assert "font size kept" ($j.profiles.list[0].font.size -eq 11)
 Assert "font face replaced" ($j.profiles.list[0].font.face -eq "CaskaydiaCove Nerd Font Mono")
+
+# case 4: profile missing, WSL fragment provides the guid
+$frag = Join-Path $tmp "fragments"
+New-Item -ItemType Directory -Path $frag | Out-Null
+@'
+{ "profiles": [ { "name": "ubuntu-wpaas-resolute", "guid": "{11111111-2222-3333-4444-555555555555}" } ] }
+'@ | Set-Content (Join-Path $frag "frag.json")
+@'
+{ "profiles": { "list": [ { "name": "other", "guid": "{2}" } ] } }
+'@ | Set-Content $settings
+Set-TerminalProfileFont -DistName "ubuntu-wpaas-resolute" -Face "CaskaydiaCove Nerd Font Mono" -SettingsPath $settings -FragmentsPath $frag
+$j = Get-Content $settings -Raw | ConvertFrom-Json
+$p = $j.profiles.list | Where-Object name -eq "ubuntu-wpaas-resolute"
+Assert "appended profile carries fragment guid" ($p.guid -eq "{11111111-2222-3333-4444-555555555555}")
+Assert "guid profile keeps font" ($p.font.face -eq "CaskaydiaCove Nerd Font Mono")
 
 Remove-Item -Recurse -Force $tmp
 if ($fails -eq 0) { Write-Output "ALL OK" } else { Write-Output "$fails FAILED"; exit 1 }

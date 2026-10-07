@@ -13,7 +13,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - Temurin JDK 11, 17, 21, 25 (25 is the default)
 - .NET SDK (newest available, currently 10.0)
 - Node.js (current LTS via `n`)
-- Rust (rustup), Python 3, git + git-flow, GitHub CLI with `gh act`, jq, yq, ffmpeg, mediainfo
+- Rust (rustup), Python 3, git + git-flow, GitHub CLI (`gh act` extension is installed once you have run `gh auth login`), jq, yq, ffmpeg, mediainfo
 - HashiCorp Vault CLI, Telepresence
 - Claude Code CLI and OpenAI Codex CLI
 - Powerline prompt with the CaskaydiaCove Nerd Font configured in Windows Terminal
@@ -38,6 +38,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
    distribution to finish steps that need systemd.
 
 `bootstrap.ps1 -Name ubuntu-wpaas-test` installs under another name for testing.
+`-Branch <name>` makes it download the installer from that branch of this repository instead of `master` (useful for testing changes before they are merged).
 
 ## Reruns, failures and flags
 
@@ -63,9 +64,17 @@ failure is reported in the summary and the run continues.
 
 ## Updating an existing resolute installation
 
+`~/installer` is an extracted tarball, not a git clone. To update it:
+
 ```
-cd ~/installer && git pull && ./install.sh --force
+cd ~ && curl -fsSL https://github.com/swisstxt/wpaas-wsl-ubuntu/archive/refs/heads/master.tar.gz -o install.tar.gz \
+  && rm -rf installer && mkdir installer && tar xzf install.tar.gz -C installer --strip-components=1
+cd ~/installer && ./install.sh --force --only <step>    # rerun just the steps you want
 ```
+
+Avoid a blanket `./install.sh --force`: it reruns every step. Steps never overwrite files you
+may have edited (`~/.kube/*.config`, the VS Code server settings), but a full rerun still takes
+a long time.
 
 ## Development
 
@@ -74,4 +83,5 @@ cd ~/installer && git pull && ./install.sh --force
 - `test/docker-smoke.sh [install.sh args]` runs the installer inside `ubuntu:26.04`
   against the real repositories (systemd steps report DEFERRED there).
 - Version knobs live in `vars.sh`. Steps live in `steps/NN-<name>.sh`; the header comments
-  `# required: 1`, `# needs_systemd: 1` and `# needs_answers: ...` are read by the runner.
+  `# required: 1` and `# needs_systemd: 1` are read by the runner; `# needs_answers: ...`
+  documents which answers a step uses.

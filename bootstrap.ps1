@@ -93,7 +93,10 @@ function Install-NerdFont {
 }
 
 function Set-TerminalProfileFont {
-    param([string]$DistName, [string]$Face, [string]$SettingsPath = "")
+    param(
+        [string]$DistName, [string]$Face, [string]$SettingsPath = "",
+        [string]$FragmentsPath = (Join-Path $env:LOCALAPPDATA "Microsoft\Windows Terminal\Fragments\Microsoft.WSL")
+    )
     if (-not $SettingsPath) {
         $candidates = @(
             (Join-Path $env:LOCALAPPDATA "Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"),
@@ -120,7 +123,21 @@ function Set-TerminalProfileFont {
             $profile | Add-Member -NotePropertyName font -NotePropertyValue ([pscustomobject]@{ face = $Face }) -Force
         }
     } else {
-        $list += [pscustomobject]@{ name = $DistName; source = "Microsoft.WSL"; font = [pscustomobject]@{ face = $Face } }
+        # WSL registers the profile through a Windows Terminal fragment; reuse its guid so the entry attaches to it.
+        $guid = $null
+        if (Test-Path $FragmentsPath) {
+            foreach ($file in Get-ChildItem $FragmentsPath -Filter "*.json" -ErrorAction SilentlyContinue) {
+                try { $frag = Get-Content $file.FullName -Raw | ConvertFrom-Json } catch { continue }
+                $match = @($frag.profiles) | Where-Object { $_.name -eq $DistName -and $_.guid } | Select-Object -First 1
+                if ($match) { $guid = $match.guid; break }
+            }
+        }
+        $entry = [ordered]@{}
+        if ($guid) { $entry.guid = $guid } else { Write-Warning "No Windows Terminal profile registered by WSL found for '$DistName'. The font may need to be set manually in Windows Terminal ('$Face')." }
+        $entry.name = $DistName
+        $entry.source = "Microsoft.WSL"
+        $entry.font = [pscustomobject]@{ face = $Face }
+        $list += [pscustomobject]$entry
     }
     $json.profiles | Add-Member -NotePropertyName list -NotePropertyValue $list -Force
     $json | ConvertTo-Json -Depth 64 | Set-Content $SettingsPath -Encoding UTF8
@@ -130,18 +147,17 @@ function Set-TerminalProfileFont {
 function Invoke-Installer([string]$DistName, [string]$User) {
     & $wsl -d $DistName -u $User --cd "~" -- bash -c "curl --insecure -fsSL '$repoTarball' -o install.tar.gz && rm -rf installer && mkdir installer && tar xzf install.tar.gz -C installer --strip-components=1"
     if ($LASTEXITCODE -ne 0) { throw "Downloading the installer into $DistName failed ($LASTEXITCODE)" }
-    # Native output goes to the host so the function's only pipeline output is the boolean result.
-    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh | Out-Host
+    # No pipe here: the Linux side must keep a console on stdout (sudo and read prompts, UTF-8 output).
+    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh
     $first = $LASTEXITCODE
     Write-Host "Restarting $DistName so systemd and wsl.conf take effect"
-    & $wsl --terminate $DistName | Out-Host
-    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh | Out-Host
+    & $wsl --terminate $DistName
+    & $wsl -d $DistName -u $User --cd "~/installer" -- bash install.sh
     $second = $LASTEXITCODE
-    if ($first -ne 0 -or $second -ne 0) {
+    $script:installerOk = ($first -eq 0 -and $second -eq 0)
+    if (-not $script:installerOk) {
         Write-Warning "Installer passes exited with $first and $second. Logs: \\wsl.localhost\$DistName\home\$User\.wpaas-installer\logs. Rerun with: wsl -d $DistName -u $User --cd ~/installer -- bash install.sh"
-        return $false
     }
-    return $true
 }
 
 if ($LoadOnly) { return }
@@ -152,7 +168,9 @@ try {
         if (Test-DistroExists $dist) { throw "A WSL distribution named '$dist' already exists. Use -Name to pick another name or unregister it first." }
         if (-not (Test-Path $image)) {
             Write-Output "Downloading $imageUrl ... please be patient"
-            Start-BitsTransfer -Source $imageUrl -Destination $image
+            if (Test-Path "$image.part") { Remove-Item -Force "$image.part" }
+            Start-BitsTransfer -Source $imageUrl -Destination "$image.part"
+            Move-Item "$image.part" $image
         }
         & $wsl --install --from-file $image --name $dist --no-launch
         if ($LASTEXITCODE -ne 0) { throw "wsl --install failed ($LASTEXITCODE)" }
@@ -160,14 +178,14 @@ try {
         Write-Output "Starting $dist for the first time. Create your Linux user when asked, then type 'exit'."
         & $wsl -d $dist
         $user = (Get-WslText @("-d", $dist, "--", "id", "-un", "1000") | Select-Object -First 1)
-        if (-not $user) { throw "No user with uid 1000 exists in $dist. Launch 'wsl -d $dist', finish the user setup, then rerun with the same -Name." }
+        if (-not $user) { throw "No user with uid 1000 exists in $dist. Run 'wsl --unregister $dist' and start bootstrap again, creating the user when the distribution first starts." }
         $user = $user.Trim()
         Write-Output "Linux user: $user"
     }
     Install-NerdFont
     Set-TerminalProfileFont -DistName $dist -Face $fontFace -SettingsPath $TerminalSettingsPath
     if (-not $SkipInstall) {
-        $installerOk = [bool](Invoke-Installer -DistName $dist -User $user)
+        Invoke-Installer -DistName $dist -User $user
     }
 } catch {
     Write-Output $_.ScriptStackTrace
@@ -175,7 +193,7 @@ try {
     exit 1
 }
 if (-not $SkipInstall) {
-    if ($installerOk) {
+    if ($script:installerOk) {
         Write-Output "Done. Open '$dist' from Windows Terminal."
     } else {
         Write-Output "Finished with installer failures. See the warning above."

@@ -54,6 +54,14 @@ if [ "$LIST" -eq 1 ]; then
   exit 0
 fi
 
+known_ids=$(while read -r f; do step_id "$f"; done < <(discover_steps))
+for id in "${ONLY[@]}" "${SKIP[@]}"; do
+  if ! grep -qxF -- "$id" <<<"$known_ids"; then
+    echo "unknown step: $id (see --list)" >&2
+    exit 2
+  fi
+done
+
 runner_init
 answers_collect || exit 2
 

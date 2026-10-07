@@ -3,7 +3,7 @@
 # required: 1
 # Installs the corporate CA certificates into the system store and builds the Node bundle.
 . "$REPO_ROOT/lib.sh"
-package_installed ca-certificates || apt_install ca-certificates
+package_installed ca-certificates || { apt_update; apt_install ca-certificates; }
 
 # update-ca-certificates only picks up *.crt, so bundles in *.pem are installed under a .crt name.
 for cert in certificates/*.crt certificates/*.pem; do

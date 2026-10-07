@@ -4,7 +4,7 @@
 # e.g.: test/docker-smoke.sh --only certificates --only apt-base
 set -u
 cd "$(dirname "$0")/.." || exit 1
-docker run --rm -t \
+docker run --rm -t --cap-add IPC_LOCK \
   -v "$PWD:/installer:ro" \
   -e WPAAS_NO_SUDO=1 \
   -e WPAAS_GIT_NAME="Smoke Test" \

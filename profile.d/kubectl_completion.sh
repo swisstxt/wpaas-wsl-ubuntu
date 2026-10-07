@@ -1,5 +1,6 @@
+#!/bin/bash
 if command -v kubectl >/dev/null 2>&1; then
-   source <(kubectl completion bash)
+   eval "$(kubectl completion bash)"
    alias k=kubectl
    complete -F __start_kubectl k
    alias kc="kubectl config current-context"

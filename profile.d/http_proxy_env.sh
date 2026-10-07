@@ -1,3 +1,4 @@
+#!/bin/bash
 export HTTPS_PROXY=http://gateway.zscloud.net:10268
 export HTTP_PROXY=http://gateway.zscloud.net:10268
 export https_proxy=http://gateway.zscloud.net:10268

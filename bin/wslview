@@ -1,0 +1,17 @@
+#!/bin/bash
+# Opens a URL or local path with the Windows default handler. Replaces wslu's wslview.
+set -eu
+if [ $# -ne 1 ]; then
+  echo "usage: wslview <url|path>" >&2
+  exit 2
+fi
+target=$1
+case $target in
+  http://*|https://*|mailto:*) ;;
+  *)
+    if [ -e "$target" ]; then
+      target=$(wslpath -w "$(realpath "$target")")
+    fi
+    ;;
+esac
+exec /mnt/c/Windows/System32/rundll32.exe url.dll,FileProtocolHandler "$target"

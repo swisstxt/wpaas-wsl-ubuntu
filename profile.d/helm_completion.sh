@@ -1,5 +1,5 @@
 #!/bin/bash
 
 if command -v helm >/dev/null 2>&1; then
-   source <(helm completion bash)
+   eval "$(helm completion bash)"
 fi

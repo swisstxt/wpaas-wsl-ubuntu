@@ -33,8 +33,10 @@ LIST=0
 while [ $# -gt 0 ]; do
   case $1 in
     --list) LIST=1 ;;
-    --only) ONLY+=("$2"); shift ;;
-    --skip) SKIP+=("$2"); shift ;;
+    --only|--skip)
+      if [ $# -lt 2 ]; then echo "option $1 needs an argument" >&2; usage; exit 2; fi
+      if [ "$1" = --only ]; then ONLY+=("$2"); else SKIP+=("$2"); fi
+      shift ;;
     --force) FORCE=1 ;;
     --reset) runner_reset; exit 0 ;;
     --non-interactive) NON_INTERACTIVE=1 ;;

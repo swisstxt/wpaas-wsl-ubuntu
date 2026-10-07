@@ -142,5 +142,14 @@ out=$(run --only); rc=$?
 assert_eq    "exit 2 on missing option argument" "$rc" 2
 assert_match "clear message" "$out" "option --only needs an argument"
 
+echo "--- run 11: numeric step ordering"
+ORDER_DIR="$TMP/order-steps"
+mkdir -p "$ORDER_DIR"
+for n in 10-first 15-second 100-third; do
+  printf '#!/bin/bash\n# step: %s\necho %s\n' "${n#*-}" "${n#*-}" > "$ORDER_DIR/$n.sh"
+done
+out=$(STEPS_DIR="$ORDER_DIR" WPAAS_DIR="$TMP/order-wpaas" run --non-interactive </dev/null)
+assert_eq "steps run in numeric order" "$(grep -o '==> [a-z]*' <<<"$out" | tr '\n' ' ')" "==> first ==> second ==> third "
+
 echo
 if [ "$fails" -eq 0 ]; then echo "ALL OK"; else echo "$fails FAILED"; exit 1; fi

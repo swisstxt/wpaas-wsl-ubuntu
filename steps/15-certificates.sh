@@ -16,6 +16,6 @@ sudo update-ca-certificates
 
 # All local CA certs as one PEM bundle for NODE_EXTRA_CA_CERTS (profile.d/node_certs.sh).
 tmp=$(mktemp)
-cat /usr/local/share/ca-certificates/*.crt > "$tmp"
+for c in /usr/local/share/ca-certificates/*.crt; do [ -e "$c" ] || continue; cat "$c"; echo; done > "$tmp"
 install_file "$tmp" /etc/nodecerts.pem
 rm -f "$tmp"

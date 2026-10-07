@@ -11,9 +11,7 @@ no longer aborts the whole run and reruns are cheap, non-interactive and
 idempotent.
 
 Out of scope: supporting 24.04 and 26.04 from one codebase, migrating existing
-WSL installations in place, the mongodb/pgdg repos some machines carry, and the
-plaintext credentials in `home/.gradle/gradle.properties` (flagged as a
-follow-up in "Follow-ups").
+WSL installations in place, and the mongodb/pgdg repos some machines carry.
 
 ## Findings that drive the design
 
@@ -230,7 +228,5 @@ logs and state live, how to reset.
 
 ## Follow-ups (not part of this work)
 
-- `home/.gradle/gradle.properties` contains plaintext credentials committed
-  to git. They should be removed from the repo and from history.
 - The mongodb and pgdg repos present on some machines are not managed by the
   installer.

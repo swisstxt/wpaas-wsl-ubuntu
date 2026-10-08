@@ -1,13 +1,16 @@
 #!/bin/bash
 # step: nodejs
-# Distro node/npm bootstrap `n`, which then installs the wanted release into /usr/local.
+# Installs `n` (a standalone bash script) straight from GitHub, then the wanted Node release into /usr/local.
+# No distro nodejs/npm: on 26.04 that pulls webpack and hundreds of packages we never use.
 . "$REPO_ROOT/lib.sh"
-apt_install --no-install-recommends nodejs npm
-sudo npm install -g n
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+retry 3 curl -fsSL https://raw.githubusercontent.com/tj/n/master/bin/n -o "$tmp"
+sudo install -m 0755 "$tmp" /usr/local/bin/n
 sudo n "$NODE_VERSION"
 # TLS goes through NODE_EXTRA_CA_CERTS (profile.d/node_certs.sh); no proxy, strict ssl stays on.
-npm config delete proxy
-npm config delete https-proxy
-npm config set strict-ssl true
-hash -r
+/usr/local/bin/npm config delete proxy
+/usr/local/bin/npm config delete https-proxy
+/usr/local/bin/npm config set strict-ssl true
 /usr/local/bin/node --version
+/usr/local/bin/npm --version

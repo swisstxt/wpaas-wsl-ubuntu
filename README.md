@@ -12,7 +12,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - Helm 4
 - Temurin JDK 11, 17, 21, 25 (25 is the default)
 - .NET SDK (newest available, currently 10.0)
-- Node.js (current LTS via `n`)
+- Node.js (current LTS via `n`, no distro node packages)
 - Rust (rustup), Python 3, git + git-flow, GitHub CLI (`gh act` extension is installed once you have run `gh auth login`), jq, yq, ffmpeg, mediainfo
 - HashiCorp Vault CLI, Telepresence
 - Claude Code CLI and OpenAI Codex CLI

@@ -20,5 +20,8 @@ if [ "$(head -n1 "$entry")" != enabled ]; then
   exit 1
 fi
 if [ -e /mnt/c/Windows/System32/cmd.exe ]; then
-  /mnt/c/Windows/System32/cmd.exe /c "echo interop ok" >/dev/null
+  (cd /mnt/c && /mnt/c/Windows/System32/cmd.exe /c "echo interop ok" >/dev/null) || {
+    echo "Windows interop check failed: cmd.exe did not run" >&2
+    exit 1
+  }
 fi

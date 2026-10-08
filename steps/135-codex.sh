@@ -4,6 +4,6 @@
 . "$REPO_ROOT/lib.sh"
 tmp=$(mktemp)
 retry 3 curl --cacert /etc/ssl/certs/ca-certificates.crt -fsSL https://chatgpt.com/codex/install.sh -o "$tmp"
-sh "$tmp"
+sh "$tmp" </dev/null
 rm -f "$tmp"
 "$HOME/.local/bin/codex" --version

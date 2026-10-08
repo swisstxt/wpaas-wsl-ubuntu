@@ -36,6 +36,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 5. Answer the installer's questions (git identity, kube contexts, JetBrains IDEs). They are asked once and remembered.
 6. Wait for the summary. The script runs the installer a second time after a restart of the
    distribution to finish steps that need systemd.
+7. Open a new terminal for the new distribution afterwards: tools installed under `~/.local/bin` (claude, codex) and snaps (`yq`) only appear on PATH in a fresh login shell.
 
 `bootstrap.ps1 -Name ubuntu-wpaas-test` installs under another name for testing.
 `-Branch <name>` makes it download the installer from that branch of this repository instead of `master` (useful for testing changes before they are merged).

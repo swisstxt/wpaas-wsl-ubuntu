@@ -11,8 +11,10 @@ for f in certificates/*.crt certificates/*.pem; do
   awk -v out="$tmp/$(basename "$f")" '/-----BEGIN CERTIFICATE-----/{n++} {print > (out "." n)}' "$f"
 done
 
+found=0
 for kt in /usr/lib/jvm/temurin-*-jdk-amd64/bin/keytool; do
   [ -x "$kt" ] || continue
+  found=$((found + 1))
   existing=$("$kt" -list -cacerts -storepass changeit -v | sed -nE 's/^[[:space:]]*SHA256: *//p')
   for c in "$tmp"/*; do
     [ -e "$c" ] || continue
@@ -28,3 +30,8 @@ for kt in /usr/lib/jvm/temurin-*-jdk-amd64/bin/keytool; do
     existing+=$'\n'"$fp"
   done
 done
+# Without a JDK the loop does nothing; failing keeps the step retryable after the jdk step is fixed.
+if [ "$found" -eq 0 ]; then
+  echo "no Temurin JDK found under /usr/lib/jvm (did the jdk step fail?)" >&2
+  exit 1
+fi

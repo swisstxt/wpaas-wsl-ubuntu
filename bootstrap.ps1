@@ -92,6 +92,17 @@ function Install-NerdFont {
     }
 }
 
+function Remove-JsonComments {
+    # Windows Terminal reads and writes JSONC (comments, trailing commas); ConvertFrom-Json in
+    # PowerShell 5.1 accepts neither. Strings are matched first so their content is left alone.
+    param([string]$Text)
+    $pattern = '("(?:[^"\\]|\\.)*")|//[^\r\n]*|/\*[\s\S]*?\*/|,(?=\s*[\]}])'
+    return [regex]::Replace($Text, $pattern, [System.Text.RegularExpressions.MatchEvaluator]{
+        param($m)
+        if ($m.Groups[1].Success) { $m.Value } else { "" }
+    })
+}
+
 function Set-TerminalProfileFont {
     param(
         [string]$DistName, [string]$Face, [string]$SettingsPath = "",
@@ -108,7 +119,10 @@ function Set-TerminalProfileFont {
         return
     }
     try {
-        $json = Get-Content $SettingsPath -Raw | ConvertFrom-Json
+        $raw = Get-Content $SettingsPath -Raw
+        $clean = Remove-JsonComments $raw
+        if ($clean -ne $raw) { Write-Output "Note: comments and trailing commas in $SettingsPath are not kept when it is rewritten (a backup is made)." }
+        $json = $clean | ConvertFrom-Json
     } catch {
         Write-Warning "Could not parse $SettingsPath ($($_.Exception.Message)). Set the font of profile '$DistName' to '$Face' manually."
         return

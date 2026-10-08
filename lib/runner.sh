@@ -87,6 +87,8 @@ run_step() {
 
   echo
   echo "==> $id  (log: $log)"
+  # A forced rerun must not keep the old marker: if it fails, the next run has to retry.
+  rm -f "$STATE_DIR/$id.done"
   # Explicit stdin: the terminal when we have one, else nothing (never a pipe we own).
   local in=/dev/null
   if [ -t 0 ] && { : </dev/tty; } 2>/dev/null; then in=/dev/tty; fi

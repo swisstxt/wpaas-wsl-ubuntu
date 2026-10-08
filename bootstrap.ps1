@@ -175,9 +175,17 @@ try {
         & $wsl --install --from-file $image --name $dist --no-launch
         if ($LASTEXITCODE -ne 0) { throw "wsl --install failed ($LASTEXITCODE)" }
         Write-Output ""
-        Write-Output "Starting $dist for the first time. Create your Linux user when asked, then type 'exit'."
-        & $wsl -d $dist
+        Write-Output "Starting $dist for the first time. Create your Linux user when asked."
+        # The image's first-run setup (user creation) runs on the first launch. Running a command
+        # that exits on its own means nobody has to type 'exit' afterwards.
+        & $wsl -d $dist -- true
         $user = (Get-WslText @("-d", $dist, "--", "id", "-un", "1000") | Select-Object -First 1)
+        if (-not $user) {
+            # Fallback for WSL versions that only run the first-run setup for an interactive shell.
+            Write-Output "User setup did not run yet. Opening a shell: create your Linux user when asked, then type 'exit'."
+            & $wsl -d $dist
+            $user = (Get-WslText @("-d", $dist, "--", "id", "-un", "1000") | Select-Object -First 1)
+        }
         if (-not $user) { throw "No user with uid 1000 exists in $dist. Run 'wsl --unregister $dist' and start bootstrap again, creating the user when the distribution first starts." }
         $user = $user.Trim()
         Write-Output "Linux user: $user"

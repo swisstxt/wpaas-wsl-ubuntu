@@ -156,5 +156,24 @@ out=$(run --only nope 2>&1); rc=$?
 assert_eq    "exit 2 on unknown step" "$rc" 2
 assert_match "unknown step message" "$out" "unknown step: nope \\(see --list\\)"
 
+echo "--- run 13: a failed forced rerun forgets the done marker"
+export STEPS_DIR="$TMP/steps13"
+mkdir -p "$STEPS_DIR"
+cat > "$STEPS_DIR/10-flaky.sh" <<'S'
+#!/bin/bash
+# step: flaky
+if [ -e "$WPAAS_DIR/fail-flaky" ]; then echo "flaky fails"; exit 1; fi
+echo "flaky ran"
+S
+WPAAS_DIR13="$TMP/wpaas13"
+out=$(WPAAS_DIR="$WPAAS_DIR13" run --non-interactive </dev/null)
+assert_file   "flaky.done after success" "$WPAAS_DIR13/state/flaky.done"
+touch "$WPAAS_DIR13/fail-flaky"
+out=$(WPAAS_DIR="$WPAAS_DIR13" run --non-interactive --force </dev/null); rc=$?
+assert_eq     "forced rerun fails" "$rc" 1
+assert_nofile "flaky.done removed by the failed forced rerun" "$WPAAS_DIR13/state/flaky.done"
+out=$(WPAAS_DIR="$WPAAS_DIR13" run --non-interactive </dev/null)
+assert_match  "next plain run retries flaky" "$out" "^ +flaky +FAILED"
+
 echo
 if [ "$fails" -eq 0 ]; then echo "ALL OK"; else echo "$fails FAILED"; exit 1; fi

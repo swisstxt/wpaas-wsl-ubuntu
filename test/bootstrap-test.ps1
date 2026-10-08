@@ -54,5 +54,29 @@ $p = $j.profiles.list | Where-Object name -eq "ubuntu-wpaas-resolute"
 Assert "appended profile carries fragment guid" ($p.guid -eq "{11111111-2222-3333-4444-555555555555}")
 Assert "guid profile keeps font" ($p.font.face -eq "CaskaydiaCove Nerd Font Mono")
 
+# case 5: JSONC as Windows Terminal writes it (comments, trailing commas); strings stay intact
+@'
+{
+    // line comment with "quotes" and a // marker
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    /* block
+       comment */
+    "profiles": {
+        "defaults": {},
+        "list": [
+            { "name": "ubuntu-wpaas-resolute", "source": "Microsoft.WSL", "guid": "{1}", "commandline": "wsl.exe -d x // not a comment", },
+            { "name": "other", "guid": "{2}" /* keep */ },
+        ],
+    },
+}
+'@ | Set-Content $settings
+Set-TerminalProfileFont -DistName "ubuntu-wpaas-resolute" -Face "CaskaydiaCove Nerd Font Mono" -SettingsPath $settings
+$j = Get-Content $settings -Raw | ConvertFrom-Json
+$p = $j.profiles.list | Where-Object name -eq "ubuntu-wpaas-resolute"
+Assert "jsonc: font set" ($p.font.face -eq "CaskaydiaCove Nerd Font Mono")
+Assert "jsonc: string containing // kept" ($p.commandline -eq "wsl.exe -d x // not a comment")
+Assert "jsonc: other profile kept" (($j.profiles.list | Where-Object name -eq "other").guid -eq "{2}")
+Assert "jsonc: schema kept" ($j.'$schema' -eq "https://aka.ms/terminal-profiles-schema")
+
 Remove-Item -Recurse -Force $tmp
 if ($fails -eq 0) { Write-Output "ALL OK" } else { Write-Output "$fails FAILED"; exit 1 }

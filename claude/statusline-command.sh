@@ -1,5 +1,5 @@
 #!/bin/bash
-# Two-line status line for Claude Code (installed by steps/132-claude-statusline.sh).
+# Two-line status line for Claude Code (installed by steps/132-claude-settings.sh).
 # Line 1: user@host  dir  branch(+staged ~modified ?untracked ↑ahead ↓behind)  worktree  PR  agent  vim
 # Line 2: model  effort  thinking  ctx bar  5h bar+reset  7d bar+reset  spend  cache state
 # Segments whose data is missing are omitted. The branch glyph needs the nerd font that

@@ -16,7 +16,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - Node.js (current LTS via `n`, no distro node packages)
 - Rust (rustup), Python 3, git + git-flow, GitHub CLI (`gh act` extension is installed once you have run `gh auth login`), jq, yq, ffmpeg, mediainfo
 - HashiCorp Vault CLI, Telepresence
-- Claude Code CLI (with a two-line status line: git state, PR, model, context and rate-limit bars) and OpenAI Codex CLI
+- Claude Code CLI with team settings (permissions, plugins, a two-line status line showing git state, PR, model, context and rate-limit bars) and OpenAI Codex CLI
 - Powerline prompt with the CaskaydiaCove Nerd Font configured in Windows Terminal
 - VA-API video acceleration (d3d12), `wslview` (also `xdg-open`) to open URLs in the Windows browser; `*.openshiftapps.com` opens in Firefox on the host
 - Optional: Rider and IntelliJ IDEA Ultimate (snap)

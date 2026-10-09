@@ -36,7 +36,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 2. Open PowerShell as your regular user and allow the script once:
    `Set-ExecutionPolicy -Scope Process Bypass`
 3. Run `.\bootstrap.ps1`.
-4. When the new distribution starts for the first time, create your Linux user when asked. The setup returns to bootstrap on its own.
+4. When the new distribution starts for the first time, create your Linux user (name and password) when asked and answer the Ubuntu metrics question. The setup returns to bootstrap on its own.
 5. Answer the installer's questions (git identity, kube contexts, JetBrains IDEs). They are asked once and remembered.
 6. Wait for the summary. The script runs the installer a second time after a restart of the
    distribution to finish steps that need systemd.

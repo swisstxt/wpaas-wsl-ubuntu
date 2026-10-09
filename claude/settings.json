@@ -1,0 +1,109 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(kubectl * get *)",
+      "Bash(kubectl * describe *)",
+      "Bash(kubectl * logs *)",
+      "Bash(npm audit *)",
+      "Bash(npm view *)",
+      "Bash(npm ls *)",
+      "Bash(npm run *)",
+      "Bash(npm pkg *)",
+      "Bash(npx gulp *)",
+      "Bash(gh api --method GET *)",
+      "Bash(gh api repos/*/dependabot/*)",
+      "Bash(bash -n *)",
+      "Bash(dotnet build *)",
+      "WebFetch(domain:docs.github.com)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/secrets/**)",
+      "Read(~/.kube/**)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(npm update *)",
+      "Bash(npm remove *)",
+      "Bash(kubectl * delete *)",
+      "Bash(kubectl * apply *)",
+      "Bash(kubectl * edit *)",
+      "Bash(kubectl * patch *)",
+      "Bash(kubectl * scale *)",
+      "Bash(kubectl * drain *)",
+      "Bash(gh api *)"
+    ],
+    "additionalDirectories": [
+      "~/src/mh3-master-repo",
+      "~/src/mh3-kubernetes",
+      "~/src/mh3-kubernetes-cargo",
+      "~/src/mh3-grafana",
+      "~/src/managed-kubernetes",
+      "~/src/sport-rabbit"
+    ]
+  },
+  "model": "claude-fable-5-1[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "atlassian@claude-plugins-official": true,
+    "chrome-devtools-mcp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    }
+  },
+  "effortLevel": "high",
+  "theme": "dark",
+  "editorMode": "normal",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "autoMode": {
+    "environment": [
+      "### Org-wide",
+      "**Organization**: swisstxt (GitHub org for this repo's remote)",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: Internal (swisstxt/mh3-master-repo, confirmed via gh)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: HashiCorp Vault (vault CLI used); CI secrets referenced by name only (CONFLUENCE_TOKEN, CONFLUENCE_USER, EML_PASSWORD, EML_USERNAME, REGISTRY_PASSWORD, REGISTRY_USERNAME, RELEASE_BOT_APP_ID, RELEASE_BOT_PRIVATE_KEY, SLACK_WEBHOOK_URL) — values not gathered",
+      "**Default / protected branches**: develop (default), develop and master protected via rulesets (`develop merge queue`, `master protection`, `tag protection` all active)",
+      "**CI/CD deploy targets**: registry.swisstxt.ch (container image registry); Kubernetes namespaces mediahub-dev, mediahub-int, mediahub-prd, mediahub-prod, mk8s-gitops, mk8s-external-secrets-operator, mk8s-grafana-alloy, cloudtools-prd, openshift-gitops, openshift-monitoring, openshift-user-workload-monitoring, openshift-machine-api, kube-system",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
+      "**Source control**: swisstxt/mh3-master-repo (this repo) and its origin remote only",
+      "**Trusted internal domains**: cloud.mediahub.ch, registry.swisstxt.ch",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: cloud.mediahub.ch, registry.swisstxt.ch, thanos-querier-openshift-monitoring.apps.rosa.stxt-prd-1.gjl9.p3.openshiftapps.com",
+      "**Internal package registry**: registry.swisstxt.ch",
+      "**Sensitive data locations & audiences**: components/mh3-camunda-springboot/check-assets-against-cargo-prod.sh; components/mh3-frontend/config/webpack.prod.js; components/mh3-frontend/e2e/run-with-secrets.sh; components/mh3-rio-status-job/launch_prod.sh; components/mh3-work-manager/import-from-prod.sh; components/mh3-work-manager/import-from-prod.txt; scripts/github/backfill-secret-alerts.sh; scripts/gpu-server/prod-certificate-authority.txt; scripts/purge-secrets-history/purge-secrets-from-history.sh; .github/workflows/secret-scan.yml; .env (gitignored) — share only with audiences cleared at the named+specifics bar",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any host/namespace/container matching `prod`/`production` as a whole segment — includes mediahub-prd, mediahub-prod, cloudtools-prd, api.stxt-prd-1, stxt-prd-1 cluster",
+      "**Protected deployment namespaces / environments**: mediahub-prd, mediahub-prod, cloudtools-prd, mediahub-int (staging-adjacent, treat cautiously), mk8s-external-secrets-operator, mk8s-gitops, openshift-gitops",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything tagged prod/production (e.g. mediahub-prd, mediahub-prod, cloudtools-prd, stxt-prd-1); mk8s-gitops and openshift-gitops as GitOps control-plane scopes",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development on the MH3 (MediaHub) platform monorepo",
+      "**Trusted repo**: swisstxt/mh3-master-repo (this repo, working directory ~/src/mh3-master-repo) and its origin remote — internal visibility",
+      "**Org-specific CLIs**: kubectl, kubectx, vault, kustomize, jb, akamai, yq, gh",
+      "routine under mh3-* component prefixes within this repo (components/mh3-<name>/) is expected day-to-day work"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Bash(kubectl delete:* -n mediahub-prd)",
+      "Bash(kubectl delete:* -n mediahub-prod)"
+    ]
+  }
+}

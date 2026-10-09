@@ -1,5 +1,5 @@
 #!/bin/bash
-# Runs the status line script against sample payloads and the claude-statusline
+# Runs the status line script against sample payloads and the claude-settings
 # step against a temporary HOME. Needs jq and git, no network.
 set -u
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -50,32 +50,34 @@ assert_nomatch "sparse input: no ctx segment" "$out" "ctx"
 # --- the step against a temporary HOME ---
 export HOME="$TMP/home"
 export WPAAS_NO_SUDO=1
-step() { bash "$REPO_ROOT/steps/132-claude-statusline.sh" 2>&1; }
+step() { bash "$REPO_ROOT/steps/132-claude-settings.sh" 2>&1; }
+S="$HOME/.claude/settings.json"
 
 out=$(step)
-assert_match "fresh home: script installed" "$out" "installing $HOME/.claude/statusline-command.sh"
-assert_match "fresh home: settings created" "$out" "created $HOME/.claude/settings.json"
-assert_eq    "fresh home: settings point at the script" "$(jq -r .statusLine.command "$HOME/.claude/settings.json")" "bash ~/.claude/statusline-command.sh"
+assert_match "fresh home: script installed"  "$out" "installing $HOME/.claude/statusline-command.sh"
+assert_match "fresh home: settings written"  "$out" "updated $S"
+assert_eq    "fresh home: statusLine set"    "$(jq -r .statusLine.command "$S")" "bash ~/.claude/statusline-command.sh"
+assert_eq    "fresh home: ~ expanded in additionalDirectories" "$(jq -r '.permissions.additionalDirectories[0]' "$S")" "$HOME/src/mh3-master-repo"
+assert_eq    "fresh home: ~ kept in permission rules" "$(jq -r '.permissions.deny[] | select(startswith("Read(~/.kube"))' "$S")" 'Read(~/.kube/**)'
+assert_eq    "fresh home: same keys as the template" "$(jq -S keys "$S")" "$(jq -S keys "$REPO_ROOT/claude/settings.json")"
 [ -x "$HOME/.claude/statusline-command.sh" ] && echo "ok   fresh home: script is executable" || { echo "FAIL fresh home: script not executable"; fails=$((fails+1)); }
 
 out=$(step)
-assert_match "rerun: script up to date"     "$out" "is up to date"
-assert_match "rerun: statusLine kept"       "$out" "already has a statusLine entry"
+assert_match "rerun: script up to date"      "$out" "statusline-command.sh is up to date"
+assert_match "rerun: settings up to date"    "$out" "settings.json is up to date"
 
-printf '{"model": "opus", "permissions": {"allow": ["Bash(ls:*)"]}}\n' > "$HOME/.claude/settings.json"
+printf '{"model": "opus", "theme": "light", "permissions": {"allow": ["Bash(ls:*)"]}, "statusLine": {"type": "command", "command": "mine"}}\n' > "$S"
 out=$(step)
-assert_match "existing settings: statusLine added" "$out" "added statusLine"
-assert_eq    "existing settings: other keys kept"  "$(jq -c '[.model, .permissions.allow[0], .statusLine.type]' "$HOME/.claude/settings.json")" '["opus","Bash(ls:*)","command"]'
+assert_match "existing settings: updated"            "$out" "updated $S"
+assert_eq    "existing settings: user scalars win"   "$(jq -c '[.model, .theme]' "$S")" '["opus","light"]'
+assert_eq    "existing settings: user arrays win"    "$(jq -c .permissions.allow "$S")" '["Bash(ls:*)"]'
+assert_eq    "existing settings: own statusLine kept" "$(jq -r .statusLine.command "$S")" "mine"
+assert_eq    "existing settings: missing keys added" "$(jq -c '[.effortLevel, (.permissions.deny | length), (.enabledPlugins | length)]' "$S")" '["high",6,3]'
 
-printf '{"statusLine": {"type": "command", "command": "mine"}}\n' > "$HOME/.claude/settings.json"
-out=$(step)
-assert_match "own statusLine: left alone"   "$out" "already has a statusLine entry"
-assert_eq    "own statusLine: unchanged"    "$(jq -r .statusLine.command "$HOME/.claude/settings.json")" "mine"
-
-printf '{ broken\n' > "$HOME/.claude/settings.json"
+printf '{ broken\n' > "$S"
 out=$(step); rc=$?
 assert_eq    "broken settings: step still succeeds" "$rc" "0"
-assert_match "broken settings: warned"      "$out" "not valid JSON"
-assert_eq    "broken settings: untouched"   "$(cat "$HOME/.claude/settings.json")" "{ broken"
+assert_match "broken settings: warned"       "$out" "not valid JSON"
+assert_eq    "broken settings: untouched"    "$(cat "$S")" "{ broken"
 
 [ "$fails" -eq 0 ] && echo "all tests passed" || { echo "$fails test(s) failed"; exit 1; }

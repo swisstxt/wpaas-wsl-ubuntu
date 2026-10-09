@@ -1,17 +1,97 @@
 #!/bin/bash
-# Opens a URL or local path with the Windows default handler. Replaces wslu's wslview.
+# Opens a URL or local path on the Windows host. Replaces wslu's wslview and is
+# also installed as xdg-open, so tools that probe for it (Go's pkg/browser,
+# gh, az, ...) work too.
+#
+# Routing: http(s) URLs whose host is, or ends in, one of FIREFOX_DOMAINS open
+# in Firefox on the Windows host (it carries the SOCKS proxy for OpenShift);
+# everything else goes to the Windows default handler. A loopback http URL is
+# usually a CLI tool's local callback server (openshift-login, gh, az, ...)
+# that redirects straight to the real login page, so the redirect target is
+# what gets matched; the browser still opens the original URL.
+#
+# WSLVIEW_FIREFOX  path to firefox.exe (default: the standard install location)
+# WSLVIEW_DRY_RUN  when set, print "<handler>\t<target>" instead of launching
 set -eu
+
+FIREFOX_DOMAINS=(openshiftapps.com)
+firefox=${WSLVIEW_FIREFOX:-/mnt/c/Program Files/Mozilla Firefox/firefox.exe}
+
 if [ $# -ne 1 ]; then
   echo "usage: wslview <url|path>" >&2
   exit 2
 fi
 target=$1
+handler=default
+
+# host_of <url>: the host part of an http(s) URL, without userinfo or port.
+host_of() {
+  local rest=${1#*://}
+  rest=${rest%%/*}
+  rest=${rest%%\?*}
+  rest=${rest%%#*}
+  rest=${rest##*@}
+  if [[ $rest == \[* ]]; then rest=${rest#\[}; rest=${rest%%\]*}; else rest=${rest%%:*}; fi
+  printf '%s' "${rest,,}"
+}
+
+# routing_url <url>: the URL to match against FIREFOX_DOMAINS. For a loopback
+# http URL that is the Location of its redirect, if it has one; otherwise
+# the URL itself. --noproxy: the proxy variables tools set for their own
+# traffic must not apply to the local request.
+routing_url() {
+  local url=$1 loc
+  case $url in http://*) ;; *) printf '%s' "$url"; return ;; esac
+  case $(host_of "$url") in
+    127.0.0.1|localhost|::1)
+      loc=$(curl -s --noproxy '*' -m 2 -o /dev/null -w '%{redirect_url}' "$url" 2>/dev/null) || loc=
+      printf '%s' "${loc:-$url}"
+      ;;
+    *) printf '%s' "$url" ;;
+  esac
+}
+
+wants_firefox() {
+  local host d
+  host=$(host_of "$1")
+  for d in "${FIREFOX_DOMAINS[@]}"; do
+    [ "$host" = "$d" ] && return 0
+    [ "${host%".$d"}" != "$host" ] && return 0
+  done
+  return 1
+}
+
 case $target in
-  http://*|https://*|mailto:*) ;;
+  http://*|https://*)
+    if wants_firefox "$(routing_url "$target")"; then
+      if [ -e "$firefox" ]; then
+        handler=firefox
+      else
+        echo "wslview: firefox not found at '$firefox', using the default browser" >&2
+      fi
+    fi
+    ;;
+  mailto:*) ;;
   *)
     if [ -e "$target" ]; then
       target=$(wslpath -w "$(realpath "$target")")
     fi
     ;;
 esac
-exec /mnt/c/Windows/System32/rundll32.exe url.dll,FileProtocolHandler "$target"
+
+if [ -n "${WSLVIEW_DRY_RUN:-}" ]; then
+  printf '%s\t%s\n' "$handler" "$target"
+  exit 0
+fi
+
+case $handler in
+  firefox)
+    # Detached: callers like pkg/browser wait for us to exit, and a fresh
+    # firefox.exe would otherwise block them until the browser is closed.
+    "$firefox" "$target" >/dev/null 2>&1 &
+    disown
+    ;;
+  default)
+    exec /mnt/c/Windows/System32/rundll32.exe url.dll,FileProtocolHandler "$target"
+    ;;
+esac

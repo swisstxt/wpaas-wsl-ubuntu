@@ -18,7 +18,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - HashiCorp Vault CLI, Telepresence
 - Claude Code CLI and OpenAI Codex CLI
 - Powerline prompt with the CaskaydiaCove Nerd Font configured in Windows Terminal
-- VA-API video acceleration (d3d12), `wslview` to open URLs in the Windows browser
+- VA-API video acceleration (d3d12), `wslview` (also `xdg-open`) to open URLs in the Windows browser; `*.openshiftapps.com` opens in Firefox on the host
 - Optional: Rider and IntelliJ IDEA Ultimate (snap)
 
 ## Prerequisites

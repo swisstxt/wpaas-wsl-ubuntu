@@ -8,7 +8,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - Corporate CA certificates for the system store, Java keystores, Node (`NODE_EXTRA_CA_CERTS`) and Python requests.
   No proxy settings: the Zscaler client connector handles the proxy transparently.
 - Docker CE (skipped when Docker Desktop WSL integration is detected), NVIDIA container toolkit
-- kubectl 1.34 (pinned) with kubelogin, openshift-login (the SRGSSR OpenShift credential plugin), krew, kubectx/kubens, optional SwissTXT kube contexts.
+- kubectl 1.34 (pinned) with kubelogin, openshift-login (the SRGSSR OpenShift credential plugin), krew with the `ns` plugin (`kubectl ns`), kubectx/kubens, optional SwissTXT kube contexts. Tab completion covers `kubectl krew` and `kubectl ns`.
   The `stxt-dev-1`, `stxt-int-1` and `stxt-prd-1` OpenShift contexts expect a local SOCKS proxy on `localhost:1080`.
 - Helm 4
 - Temurin JDK 11, 17, 21, 25 (25 is the default)

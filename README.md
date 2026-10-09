@@ -93,7 +93,10 @@ a long time.
 
 ## Tests
 
-Every pull request runs `.github/workflows/tests.yml`: shellcheck and the shell test suites in
-`test/`, `test/bootstrap-test.ps1` on a Windows runner, and `test/docker-smoke.sh`, which runs
-the whole installer non-interactively in an `ubuntu:26.04` container. All three jobs must pass
-before a pull request can be merged. Run them locally with `bash test/<name>.sh`.
+Every pull request runs `.github/workflows/tests.yml`: a gitleaks scan of the whole history
+(`.gitleaks.toml` allowlists the Azure AD ids in `kube/`), shellcheck and the shell test suites
+in `test/`, `test/bootstrap-test.ps1` on a Windows runner, and `test/docker-smoke.sh`, which
+runs the whole installer non-interactively in an `ubuntu:26.04` container. All four jobs must
+pass before a pull request can be merged, and merges go through the merge queue (`Merge when
+ready`), which runs the same jobs on the queued commit. Run the tests locally with
+`bash test/<name>.sh`.

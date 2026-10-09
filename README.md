@@ -89,3 +89,10 @@ a long time.
 - Version knobs live in `vars.sh`. Steps live in `steps/NN-<name>.sh`; the header comments
   `# required: 1` and `# needs_systemd: 1` are read by the runner; `# needs_answers: ...`
   documents which answers a step uses.
+
+## Tests
+
+Every pull request runs `.github/workflows/tests.yml`: shellcheck and the shell test suites in
+`test/`, `test/bootstrap-test.ps1` on a Windows runner, and `test/docker-smoke.sh`, which runs
+the whole installer non-interactively in an `ubuntu:26.04` container. All three jobs must pass
+before a pull request can be merged. Run them locally with `bash test/<name>.sh`.

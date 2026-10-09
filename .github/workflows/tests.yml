@@ -1,0 +1,46 @@
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  shell-tests:
+    name: lint and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck and jq
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck jq
+      - name: shellcheck
+        run: bash test/lint.sh
+      - name: runner
+        run: bash test/runner-test.sh
+      - name: kubectl completion
+        run: bash test/kubectl-complete-test.sh
+      - name: wslview
+        run: bash test/wslview-test.sh
+      - name: status line and claude settings
+        run: bash test/statusline-test.sh
+
+  bootstrap-test:
+    name: bootstrap.ps1 (Windows PowerShell)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: bootstrap
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File test/bootstrap-test.ps1
+
+  smoke:
+    name: installer in ubuntu:26.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run install.sh non-interactively in a container
+        run: bash test/docker-smoke.sh

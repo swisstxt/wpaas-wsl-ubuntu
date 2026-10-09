@@ -16,6 +16,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - Node.js (current LTS via `n`, no distro node packages)
 - Rust (rustup), Python 3, git + git-flow, GitHub CLI (`gh act` extension is installed once you have run `gh auth login`), jq, yq, ffmpeg, mediainfo
 - HashiCorp Vault CLI, Telepresence
+- gcx (Grafana CLI) with tab completion; connect to a stack with `gcx login <name> --server https://<stack>.grafana.net`, then `gcx config check`. gcx keeps tokens in the OS keyring, which WSL does not have: set `GCX_KEYCHAIN=off` (or `credentials.keychain: off` in `~/.config/gcx/config.yaml`) to store them in the mode-0600 config file instead, or pass `--token <service account token> --yes`
 - Akamai CLI with the Property Manager package (`akamai property-manager`, `akamai pipeline`); put your API credentials in `~/.edgerc` with a `[papi]` section
 - Claude Code CLI with team settings (permissions, plugins, a two-line status line showing git state, PR, model, context and rate-limit bars) and OpenAI Codex CLI
 - Powerline prompt with the CaskaydiaCove Nerd Font configured in Windows Terminal

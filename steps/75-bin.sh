@@ -5,3 +5,5 @@
 for f in bin/*; do
   install_file "$f" "/usr/local/bin/$(basename "$f")" 0755
 done
+# Tools such as kubectl credential plugins probe for xdg-open and ignore $BROWSER.
+sudo ln -sfn /usr/local/bin/wslview /usr/local/bin/xdg-open

@@ -2,7 +2,7 @@
 # step: gcx
 # gcx, the Grafana CLI for dashboards, datasources, alerting and Grafana Cloud resources
 # (successor of grafanactl), pinned to GCX_VERSION and checked against the release
-# checksum file. Completion comes from profile.d/gcx_completion.sh.
+# checksum file. Completion and GCX_KEYCHAIN=off come from profile.d/gcx.sh.
 . "$REPO_ROOT/lib.sh"
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT

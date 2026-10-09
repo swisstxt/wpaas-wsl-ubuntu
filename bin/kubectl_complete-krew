@@ -1,0 +1,26 @@
+#!/bin/bash
+# Tab completion for krew, which has no completion command of its own.
+# kubectl runs this as "kubectl_complete-krew <args...> <word>" and reads one
+# completion per line, followed by a cobra shell directive. 4 = no file completion.
+set -u
+root=${KREW_ROOT:-$HOME/.krew}
+
+# yaml_names <dir>: plugin names from the yaml files in <dir>, if any.
+yaml_names() {
+  local f
+  for f in "$1"/*.yaml; do
+    [ -e "$f" ] || continue
+    f=${f##*/}
+    echo "${f%.yaml}"
+  done
+}
+
+if [ $# -eq 1 ]; then
+  printf '%s\n' help index info install list search uninstall update upgrade version
+elif [ $# -eq 2 ]; then
+  case $1 in
+    install|info) yaml_names "$root/index/default/plugins" ;;
+    uninstall|upgrade) yaml_names "$root/receipts" ;;
+  esac
+fi
+echo ":4"

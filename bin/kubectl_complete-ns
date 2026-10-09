@@ -1,0 +1,13 @@
+#!/bin/bash
+# Tab completion for the krew "ns" plugin (kubens): kubectl runs this as
+# "kubectl_complete-ns <args...> <word>" and reads one completion per line,
+# followed by a cobra shell directive. 4 = no file completion.
+# Only the first argument is a namespace; "-" switches back to the previous one.
+set -u
+if [ $# -ne 1 ]; then
+  echo ":4"
+  exit 0
+fi
+echo "-"
+kubectl get namespaces -o 'jsonpath={range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null
+echo ":4"

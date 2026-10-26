@@ -14,7 +14,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - Temurin JDK 11, 17, 21, 25 (25 is the default)
 - .NET SDK (newest available, currently 10.0)
 - Node.js (current LTS via `n`, no distro node packages)
-- Rust (rustup), Python 3, git + git-flow, GitHub CLI (`gh act` extension is installed once you have run `gh auth login`), jq, yq, ffmpeg, mediainfo
+- Rust (rustup), Python 3, git + git-flow + git-lfs, GitHub CLI (`gh act` extension is installed once you have run `gh auth login`), jq, yq, ffmpeg, mediainfo
 - AWS CLI v2 (with tab completion) and s3cmd; credentials go into `~/.aws/credentials` (`aws configure`) and `~/.s3cfg` (`s3cmd --configure`)
 - HashiCorp Vault CLI, Telepresence
 - gcx (Grafana CLI) with tab completion; connect to a stack with `gcx login <name> --server https://<stack>.grafana.net`, then `gcx config check`. WSL has no OS keyring, so `GCX_KEYCHAIN=off` is set and tokens live in the mode-0600 `~/.config/gcx/config.yaml`

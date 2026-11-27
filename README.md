@@ -17,6 +17,7 @@ with the SwissTXT developer toolchain. Existing WSL distributions are never touc
 - Rust (rustup), Python 3, git + git-flow + git-lfs, GitHub CLI (`gh act` extension is installed once you have run `gh auth login`), jq, yq, ffmpeg, mediainfo
 - AWS CLI v2 (with tab completion) and s3cmd; credentials go into `~/.aws/credentials` (`aws configure`) and `~/.s3cfg` (`s3cmd --configure`)
 - HashiCorp Vault CLI, Telepresence
+- SSH uses the keys of the Windows OpenSSH agent: `wsl2-ssh-agent` bridges the host agent into every login shell (`SSH_AUTH_SOCK`), so keys added with `ssh-add` on Windows work in WSL without copying them. The Windows service "OpenSSH Authentication Agent" must be running
 - gcx (Grafana CLI) with tab completion; connect to a stack with `gcx login <name> --server https://<stack>.grafana.net`, then `gcx config check`. WSL has no OS keyring, so `GCX_KEYCHAIN=off` is set and tokens live in the mode-0600 `~/.config/gcx/config.yaml`
 - Akamai CLI with the Property Manager package (`akamai property-manager`, `akamai pipeline`); put your API credentials in `~/.edgerc` with a `[papi]` section
 - Claude Code CLI with team settings (permissions, plugins, a two-line status line showing git state, PR, model, context and rate-limit bars) and OpenAI Codex CLI

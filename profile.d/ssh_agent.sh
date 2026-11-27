@@ -3,6 +3,7 @@
 # openssh-ssh-agent named pipe to a socket in ~/.ssh and prints the SSH_AUTH_SOCK export.
 # It is a no-op when the bridge is already running. Skipped outside WSL (no interop).
 if [ -e /proc/sys/fs/binfmt_misc/WSLInterop ] && command -v wsl2-ssh-agent >/dev/null 2>&1; then
-  mkdir -p -m 700 "$HOME/.ssh"
+  mkdir -p "$HOME/.ssh"
+  chmod 700 "$HOME/.ssh"
   eval "$(wsl2-ssh-agent)"
 fi
